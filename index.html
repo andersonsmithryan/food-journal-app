@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Food & Symptom Journal</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --border: #dfe3e8;
+      --text: #1f2933;
+      --muted: #52606d;
+      --accent: #2563eb;
+      --accent-2: #0ea5e9;
+      --danger: #dc2626;
+      --shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0 0 0.4rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.01em;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      color: var(--muted);
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      margin-top: 1.5rem;
+    }
+
+    h4 {
+      font-size: 0.95rem;
+      margin-top: 0;
+    }
+
+    p {
+      margin: 0.4rem 0;
+      color: var(--muted);
+    }
+
+    #app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .page-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    input[type="time"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 0.65rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: #fdfdfd;
+      color: var(--text);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .inline-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+      margin-bottom: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
+      text-decoration: none;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.95rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border: none;
+    }
+
+    .btn-ghost {
+      background: #f4f7fb;
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      border-color: #fecdd3;
+      color: #b91c1c;
+    }
+
+    .btn-small {
+      padding: 0.45rem 0.65rem;
+      font-size: 0.85rem;
+      border-radius: 8px;
+    }
+
+    .actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .meal-card {
+      border: 1px solid var(--border);
+    }
+
+    .meal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .meal-controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .components-container,
+    .ingredients-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .component-card {
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 0.85rem;
+      background: #fafbfe;
+    }
+
+    .component-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .ingredient-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr)) auto;
+      gap: 0.5rem;
+      align-items: start;
+    }
+
+    .ingredient-row .subingredients textarea {
+      width: 100%;
+      min-height: 72px;
+    }
+
+    .symptom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .symptom-field {
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 0.65rem 0.75rem;
+      background: #fbfdff;
+    }
+
+    .radio-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(70px, 1fr));
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+      font-size: 0.9rem;
+    }
+
+    .radio-row label {
+      flex-direction: row;
+      gap: 0.35rem;
+      align-items: center;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 0.35rem;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    td:last-child {
+      width: 48px;
+      text-align: right;
+    }
+
+    .small-input {
+      max-width: 160px;
+    }
+
+    .subingredients {
+      grid-column: 1 / -1;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .muted-text {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 600px) {
+      .ingredient-row {
+        grid-template-columns: 1fr;
+      }
+
+      .radio-row {
+        grid-template-columns: repeat(2, minmax(70px, 1fr));
+      }
+
+      td:last-child {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="card" style="margin-bottom: 1.25rem;">
+      <div class="section-title" style="align-items: flex-end;">
+        <div>
+          <h3 style="margin-bottom: 0.15rem;">Entry selector</h3>
+          <p class="muted-text" style="margin: 0;">Pick an existing day or start a fresh entry for today.</p>
+        </div>
+        <div class="actions-bar" style="margin: 0;">
+          <select id="entry-select" class="small-input" style="min-width: 220px;"></select>
+          <button id="new-entry-btn" type="button" class="btn btn-primary">New entry for today</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Daily Food &amp; Symptom Journal</h1>
+      <h2>Track meals, ingredients, and how you feel afterward.</h2>
+    </div>
+
+    <div class="card">
+      <div class="grid-two">
+        <label>
+          Date
+          <input id="date-field" type="text" placeholder="DD MMM YYYY" autocomplete="off" />
+        </label>
+        <label>
+          Day overview / goals
+          <input id="overview-field" type="text" placeholder="e.g. Lower histamine focus, travel day" />
+        </label>
+      </div>
+      <label style="margin-top: 0.75rem;">
+        General notes
+        <textarea id="notes-field" placeholder="How are you feeling today? Any medications, supplements, or context?"></textarea>
+      </label>
+    </div>
+
+    <div class="section-title">
+      <h3>Meals</h3>
+      <div class="actions-bar">
+        <button id="add-meal-btn" type="button" class="btn btn-primary">+ Add Meal</button>
+        <button type="button" class="btn btn-primary" onclick="saveDraft()">Save draft (this device)</button>
+        <button type="button" class="btn btn-ghost" onclick="loadDraft()">Load draft</button>
+        <button type="button" class="btn btn-ghost" onclick="clearDraft()">Clear draft</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">Save as PDF</button>
+      </div>
+    </div>
+
+    <div id="meals-container"></div>
+  </div>
+
+  <!-- Templates for dynamic pieces -->
+  <template id="component-template">
+    <div class="component-card">
+      <div class="component-header">
+        <h4>Component</h4>
+        <button type="button" class="btn btn-danger btn-small remove-component-btn">Remove</button>
+      </div>
+      <label>
+        Component name
+        <input type="text" placeholder="e.g. Curry Sauce / Chicken / Rice" />
+      </label>
+      <div class="ingredients-container"></div>
+      <button type="button" class="btn btn-ghost btn-small add-ingredient-btn">+ Add Ingredient</button>
+    </div>
+  </template>
+
+  <template id="ingredient-template">
+    <div class="ingredient-row">
+      <input type="text" placeholder="Ingredient / Product" />
+      <input type="text" placeholder="Brand / Source" />
+      <input type="text" placeholder="Quantity" />
+      <button type="button" class="btn btn-danger btn-small remove-ingredient-btn">✕</button>
+      <div class="subingredients">
+        <textarea placeholder="Sub-ingredients (for pre-made items), one per line (optional)"></textarea>
+      </div>
+    </div>
+  </template>
+
+  <template id="timeline-row-template">
+    <tr>
+      <td><input type="text" placeholder="e.g. redness, bloating" /></td>
+      <td><input type="number" min="0" class="small-input" /></td>
+      <td><input type="text" class="small-input" placeholder="e.g. 40 min" /></td>
+      <td><button type="button" class="btn btn-danger btn-small remove-timeline-row-btn">✕</button></td>
+    </tr>
+  </template>
+
+  <template id="meal-template">
+    <div class="card meal-card">
+      <div class="meal-header">
+        <div class="meal-title">Meal</div>
+        <div class="meal-controls">
+          <label>
+            Type
+            <select class="meal-type-select">
+              <option>Breakfast</option>
+              <option>Lunch</option>
+              <option>Dinner</option>
+              <option>Snack</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>
+            Time eaten
+            <input type="time" class="small-input" />
+          </label>
+          <button type="button" class="btn btn-danger btn-small remove-meal-btn">✕</button>
+        </div>
+      </div>
+
+      <h3>Meal Overview</h3>
+      <div class="grid-two">
+        <label>
+          Meal name
+          <input type="text" placeholder="e.g. Chicken Curry" class="meal-name-input" />
+        </label>
+        <label>
+          Portion size
+          <input type="text" placeholder="e.g. Medium bowl" class="meal-portion-input" />
+        </label>
+      </div>
+      <label>
+        Notes
+        <textarea class="meal-notes" placeholder="e.g. reheated; takeaway; home-cooked"></textarea>
+      </label>
+
+      <h3>Ingredients (Component Structure)</h3>
+      <div class="components-container"></div>
+      <button type="button" class="btn btn-ghost btn-small add-component-btn">+ Add Component</button>
+
+      <h3>Symptoms After Meal</h3>
+      <div class="symptom-grid">
+        <div class="symptom-field">
+          <label>Facial bloating</label>
+          <div class="radio-row" data-group="facialBloating" data-scope="symptoms">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Redness / flushing</label>
+          <div class="radio-row" data-group="rednessFlushing" data-scope="symptoms">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Fatigue</label>
+          <div class="radio-row" data-group="fatigue" data-scope="symptoms">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Palpitations</label>
+          <div class="radio-row" data-group="palpitations" data-scope="symptoms">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Heart-rate sensation</label>
+          <div class="radio-row" data-group="heartRateSensation" data-scope="symptoms">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Tremor</label>
+          <div class="radio-row" data-group="tremor" data-scope="symptoms">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Abdominal bloating</label>
+          <div class="radio-row" data-group="abdominalBloating" data-scope="digestion">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Flatulence</label>
+          <div class="radio-row" data-group="flatulence" data-scope="digestion">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Constipation</label>
+          <div class="radio-row" data-group="constipation" data-scope="digestion">
+            <label><input type="radio" value="none" /> none</label>
+            <label><input type="radio" value="mild" /> mild</label>
+            <label><input type="radio" value="moderate" /> moderate</label>
+            <label><input type="radio" value="severe" /> severe</label>
+          </div>
+        </div>
+      </div>
+
+      <h3>Timeline for Meal</h3>
+      <p class="muted-text">Document symptom onset and duration to spot patterns.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Onset (min)</th>
+            <th>Duration</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="timeline-body"></tbody>
+      </table>
+      <button type="button" class="btn btn-ghost btn-small add-timeline-row-btn">+ Add Symptom Event</button>
+    </div>
+  </template>
+
+  <script>
+    const STORAGE_KEY = 'foodJournalLog_v1';
+
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthLookup = monthNames.reduce((acc, m, idx) => {
+      acc[m.toLowerCase()] = idx;
+      return acc;
+    }, {});
+
+    function formatDisplayDate(date) {
+      const d = new Date(date);
+      if (Number.isNaN(d.getTime())) return '';
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${day} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function todayIso() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function displayToIso(displayDate) {
+      const match = (displayDate || '').trim().match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);
+      if (!match) return null;
+      const day = Number(match[1]);
+      const monthIdx = monthLookup[match[2].toLowerCase()];
+      const year = Number(match[3]);
+      if (Number.isNaN(day) || Number.isNaN(monthIdx) || Number.isNaN(year)) return null;
+      const date = new Date(Date.UTC(year, monthIdx, day));
+      if (Number.isNaN(date.getTime())) return null;
+      return date.toISOString().slice(0, 10);
+    }
+
+    function randomId() {
+      return (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)) + '-' + Date.now();
+    }
+
+    function loadLog() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { version: 1, entries: [] };
+        const parsed = JSON.parse(raw);
+        if (!parsed.version || !Array.isArray(parsed.entries)) {
+          return { version: 1, entries: [] };
+        }
+        return parsed;
+      } catch (e) {
+        console.error('Failed to load log', e);
+        return { version: 1, entries: [] };
+      }
+    }
+
+    function saveLog(log) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(log));
+    }
+
+    function createEmptyEntry(isoDate) {
+      const dateObj = new Date(isoDate);
+      return {
+        id: isoDate,
+        isoDate,
+        displayDate: formatDisplayDate(dateObj),
+        notesForToday: JSON.stringify({ overview: '', generalNotes: '' }),
+        preMealState: null,
+        meals: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function parseNotesPayload(notesForToday) {
+      try {
+        const parsed = JSON.parse(notesForToday);
+        if (parsed && typeof parsed === 'object') {
+          return {
+            overview: parsed.overview || '',
+            generalNotes: parsed.generalNotes || ''
+          };
+        }
+      } catch (e) {
+        // fall through
+      }
+      return { overview: '', generalNotes: notesForToday || '' };
+    }
+
+    function serialiseNotesPayload(overview, generalNotes) {
+      return JSON.stringify({ overview: overview || '', generalNotes: generalNotes || '' });
+    }
+
+    function createComponent(data = {}) {
+      const tmpl = document.getElementById('component-template');
+      const node = tmpl.content.cloneNode(true);
+      const card = node.querySelector('.component-card');
+      card.dataset.id = data.id || randomId();
+      const nameInput = card.querySelector('input[type="text"]');
+      const ingredientsContainer = card.querySelector('.ingredients-container');
+      if (nameInput && data.name) nameInput.value = data.name;
+      const ingredients = data.ingredients && data.ingredients.length ? data.ingredients : [];
+      if (ingredients.length === 0) {
+        addIngredient(ingredientsContainer);
+      } else {
+        ingredients.forEach(ing => addIngredient(ingredientsContainer, ing));
+      }
+      return card;
+    }
+
+    function addIngredient(container, data = {}) {
+      const tmpl = document.getElementById('ingredient-template');
+      const fragment = tmpl.content.cloneNode(true);
+      const row = fragment.querySelector('.ingredient-row');
+      row.dataset.id = data.id || randomId();
+      const inputs = row.querySelectorAll('input');
+      const textarea = row.querySelector('textarea');
+      inputs[0].value = data.name || '';
+      inputs[1].value = data.brandSource || data.brand || '';
+      inputs[2].value = data.quantity || '';
+      textarea.value = Array.isArray(data.subIngredients) ? data.subIngredients.join('\n') : data.subingredients || '';
+      container.appendChild(fragment);
+      return row;
+    }
+
+    function addTimelineRow(tbody, data = {}) {
+      const tmpl = document.getElementById('timeline-row-template');
+      const fragment = tmpl.content.cloneNode(true);
+      const tr = fragment.querySelector('tr');
+      tr.dataset.id = data.id || randomId();
+      const inputs = tr.querySelectorAll('input');
+      inputs[0].value = data.symptomLabel || data.symptom || '';
+      inputs[1].value = data.onsetMinutes ?? data.onset ?? '';
+      inputs[2].value = data.durationText || data.duration || '';
+      tbody.appendChild(fragment);
+      return tr;
+    }
+
+    function createMealCard(data = {}) {
+      const tmpl = document.getElementById('meal-template');
+      const fragment = tmpl.content.cloneNode(true);
+      const card = fragment.querySelector('.meal-card');
+      card.dataset.id = data.id || randomId();
+      const typeSelect = card.querySelector('.meal-type-select');
+      const timeInput = card.querySelector('input[type="time"]');
+      const mealNameInput = card.querySelector('.meal-name-input');
+      const portionInput = card.querySelector('.meal-portion-input');
+      const notesInput = card.querySelector('.meal-notes');
+      const componentsContainer = card.querySelector('.components-container');
+      const timelineBody = card.querySelector('.timeline-body');
+
+      if (data.type && typeSelect) typeSelect.value = data.type;
+      if (data.timeEaten && timeInput) timeInput.value = data.timeEaten;
+      if (data.mealName && mealNameInput) mealNameInput.value = data.mealName;
+      if (data.portionSize && portionInput) portionInput.value = data.portionSize;
+      if (data.notes && notesInput) notesInput.value = data.notes;
+
+      const components = data.components && data.components.length ? data.components : [{}];
+      components.forEach(comp => {
+        const compEl = createComponent(comp);
+        componentsContainer.appendChild(compEl);
+      });
+
+      const symptoms = data.symptoms || {};
+      const digestion = data.digestion || {};
+      setSymptomSelections(card, symptoms, digestion);
+
+      const timeline = data.timeline && data.timeline.length ? data.timeline : [];
+      if (timeline.length === 0) {
+        addTimelineRow(timelineBody, {});
+      } else {
+        timeline.forEach(entry => addTimelineRow(timelineBody, entry));
+      }
+
+      return card;
+    }
+
+    function addMeal(data = {}) {
+      const container = document.getElementById('meals-container');
+      const card = createMealCard(data);
+      container.appendChild(card);
+      renumberMeals();
+      assignSymptomGroupNames();
+      return card;
+    }
+
+    function renumberMeals() {
+      const cards = document.querySelectorAll('.meal-card');
+      cards.forEach((card, idx) => {
+        const typeSelect = card.querySelector('.meal-type-select');
+        const title = card.querySelector('.meal-title');
+        const type = typeSelect ? typeSelect.value : 'Meal';
+        if (title) title.textContent = `Meal ${idx + 1} — ${type}`;
+      });
+    }
+
+    function assignSymptomGroupNames() {
+      const cards = document.querySelectorAll('.meal-card');
+      cards.forEach((card, idx) => {
+        const mealNumber = idx + 1;
+        const rows = card.querySelectorAll('.radio-row[data-group]');
+        rows.forEach(row => {
+          const group = row.dataset.group;
+          const radios = row.querySelectorAll('input[type="radio"]');
+          radios.forEach(radio => {
+            radio.name = `meal${mealNumber}_${group}`;
+          });
+        });
+      });
+    }
+
+    function setSymptomSelections(card, symptoms = {}, digestion = {}) {
+      const rows = card.querySelectorAll('.radio-row[data-group]');
+      rows.forEach(row => {
+        const group = row.dataset.group;
+        const scope = row.dataset.scope;
+        const chosen = scope === 'digestion' ? digestion[group] : symptoms[group];
+        const radios = row.querySelectorAll('input[type="radio"]');
+        radios.forEach(radio => {
+          radio.checked = chosen ? radio.value === chosen : false;
+        });
+      });
+    }
+
+    function collectMeal(card, index) {
+      const meal = {
+        id: card.dataset.id || randomId(),
+        index: index + 1,
+        type: card.querySelector('.meal-type-select')?.value || 'Breakfast',
+        timeEaten: card.querySelector('input[type="time"]')?.value || null,
+        mealName: card.querySelector('.meal-name-input')?.value || '',
+        portionSize: card.querySelector('.meal-portion-input')?.value || '',
+        notes: card.querySelector('.meal-notes')?.value || '',
+        components: [],
+        symptoms: {
+          facialBloating: 'none',
+          rednessFlushing: 'none',
+          fatigue: 'none',
+          palpitations: 'none',
+          heartRateSensation: 'none',
+          tremor: 'none'
+        },
+        digestion: {
+          abdominalBloating: 'none',
+          flatulence: 'none',
+          constipation: 'none'
+        },
+        timeline: []
+      };
+
+      const components = card.querySelectorAll('.component-card');
+      components.forEach(comp => {
+        const compData = {
+          id: comp.dataset.id || randomId(),
+          name: comp.querySelector('input[type="text"]')?.value || '',
+          ingredients: []
+        };
+        const ingRows = comp.querySelectorAll('.ingredient-row');
+        ingRows.forEach(row => {
+          const [nameInput, brandInput, qtyInput] = row.querySelectorAll('input');
+          const subText = row.querySelector('textarea');
+          const subParts = (subText?.value || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+          compData.ingredients.push({
+            id: row.dataset.id || randomId(),
+            name: nameInput?.value || '',
+            brandSource: brandInput?.value || '',
+            quantity: qtyInput?.value || '',
+            subIngredients: subParts
+          });
+        });
+        meal.components.push(compData);
+      });
+
+      const rows = card.querySelectorAll('.radio-row[data-group]');
+      rows.forEach(row => {
+        const group = row.dataset.group;
+        const scope = row.dataset.scope;
+        const selected = row.querySelector('input[type="radio"]:checked');
+        const value = selected ? selected.value : 'none';
+        if (scope === 'digestion') {
+          meal.digestion[group] = value;
+        } else {
+          meal.symptoms[group] = value;
+        }
+      });
+
+      const timelineRows = card.querySelectorAll('.timeline-body tr');
+      timelineRows.forEach(tr => {
+        const inputs = tr.querySelectorAll('input');
+        meal.timeline.push({
+          id: tr.dataset.id || randomId(),
+          symptomLabel: inputs[0]?.value || '',
+          onsetMinutes: inputs[1]?.value ? Number(inputs[1].value) : 0,
+          durationText: inputs[2]?.value || ''
+        });
+      });
+
+      return meal;
+    }
+
+    function collectEntryFromUI(existing) {
+      const cards = Array.from(document.querySelectorAll('.meal-card'));
+      const meals = cards.map((card, idx) => collectMeal(card, idx));
+      const overview = document.getElementById('overview-field')?.value || '';
+      const generalNotes = document.getElementById('notes-field')?.value || '';
+      const displayDate = document.getElementById('date-field')?.value || formatDisplayDate(new Date());
+      const parsedIso = displayToIso(displayDate);
+      const isoDate = parsedIso || existing?.isoDate || todayIso();
+      const now = new Date().toISOString();
+      return {
+        id: existing?.id || isoDate,
+        isoDate,
+        displayDate: displayDate || existing?.displayDate || formatDisplayDate(isoDate),
+        notesForToday: serialiseNotesPayload(overview, generalNotes),
+        preMealState: existing?.preMealState || null,
+        meals,
+        createdAt: existing?.createdAt || now,
+        updatedAt: now
+      };
+    }
+
+    function renderEntry(entry) {
+      const notes = parseNotesPayload(entry.notesForToday || '');
+      document.getElementById('date-field').value = entry.displayDate || '';
+      document.getElementById('overview-field').value = notes.overview || '';
+      document.getElementById('notes-field').value = notes.generalNotes || '';
+
+      const container = document.getElementById('meals-container');
+      container.innerHTML = '';
+      if (entry.meals && entry.meals.length) {
+        entry.meals
+          .sort((a, b) => (a.index || 0) - (b.index || 0))
+          .forEach(meal => addMeal(meal));
+      } else {
+        addMeal();
+      }
+    }
+
+    function renderEntrySelector(log, currentId) {
+      const select = document.getElementById('entry-select');
+      select.innerHTML = '';
+      const entries = [...log.entries].sort((a, b) => (a.isoDate < b.isoDate ? 1 : -1));
+      if (entries.length === 0) {
+        const opt = document.createElement('option');
+        opt.textContent = 'No saved entries yet';
+        opt.disabled = true;
+        opt.selected = true;
+        select.appendChild(opt);
+        return;
+      }
+      entries.forEach(entry => {
+        const opt = document.createElement('option');
+        opt.value = entry.id;
+        opt.textContent = `${entry.displayDate || entry.isoDate}`;
+        if (entry.id === currentId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function upsertEntry(log, entry) {
+      const existingIdx = log.entries.findIndex(e => e.isoDate === entry.isoDate);
+      if (existingIdx >= 0) {
+        log.entries[existingIdx] = { ...log.entries[existingIdx], ...entry };
+      } else {
+        log.entries.push(entry);
+      }
+    }
+
+    function saveDraft() {
+      try {
+        const existing = currentLog.entries.find(e => e.id === currentEntryId);
+        const entry = collectEntryFromUI(existing);
+        upsertEntry(currentLog, entry);
+        currentEntryId = entry.id;
+        saveLog(currentLog);
+        renderEntrySelector(currentLog, currentEntryId);
+        alert('Entry saved to this device.');
+      } catch (err) {
+        console.error(err);
+        alert('Unable to save entry (storage error).');
+      }
+    }
+
+    function loadDraft() {
+      currentLog = loadLog();
+      if (!currentLog.entries.length) {
+        alert('No saved entries found on this device.');
+        return;
+      }
+      const target = currentLog.entries.find(e => e.id === currentEntryId) || currentLog.entries[0];
+      currentEntryId = target.id;
+      renderEntrySelector(currentLog, currentEntryId);
+      renderEntry(target);
+      renumberMeals();
+      assignSymptomGroupNames();
+    }
+
+    function clearDraft() {
+      localStorage.removeItem(STORAGE_KEY);
+      currentLog = { version: 1, entries: [] };
+      const fresh = createEmptyEntry(todayIso());
+      currentLog.entries.push(fresh);
+      currentEntryId = fresh.id;
+      renderEntrySelector(currentLog, currentEntryId);
+      renderEntry(fresh);
+      alert('All saved entries cleared from this device.');
+    }
+
+    let currentLog = loadLog();
+    let currentEntryId = null;
+
+    document.addEventListener('click', event => {
+      const target = event.target;
+      if (target.classList.contains('add-component-btn')) {
+        const mealCard = target.closest('.meal-card');
+        const container = mealCard?.querySelector('.components-container');
+        if (container) {
+          const comp = createComponent({});
+          container.appendChild(comp);
+        }
+      }
+
+      if (target.classList.contains('remove-component-btn')) {
+        const comp = target.closest('.component-card');
+        comp?.remove();
+      }
+
+      if (target.classList.contains('add-ingredient-btn')) {
+        const comp = target.closest('.component-card');
+        const container = comp?.querySelector('.ingredients-container');
+        if (container) addIngredient(container);
+      }
+
+      if (target.classList.contains('remove-ingredient-btn')) {
+        const row = target.closest('.ingredient-row');
+        row?.remove();
+      }
+
+      if (target.classList.contains('add-timeline-row-btn')) {
+        const card = target.closest('.meal-card');
+        const body = card?.querySelector('.timeline-body');
+        if (body) addTimelineRow(body, {});
+      }
+
+      if (target.classList.contains('remove-timeline-row-btn')) {
+        const tr = target.closest('tr');
+        tr?.remove();
+      }
+
+      if (target.classList.contains('remove-meal-btn')) {
+        const meal = target.closest('.meal-card');
+        meal?.remove();
+        renumberMeals();
+        assignSymptomGroupNames();
+      }
+    });
+
+    document.addEventListener('change', event => {
+      if (event.target.classList.contains('meal-type-select')) {
+        renumberMeals();
+      }
+      if (event.target.id === 'entry-select') {
+        const selectedId = event.target.value;
+        const found = currentLog.entries.find(e => e.id === selectedId);
+        if (found) {
+          currentEntryId = found.id;
+          renderEntry(found);
+          renumberMeals();
+          assignSymptomGroupNames();
+        }
+      }
+    });
+
+    document.getElementById('add-meal-btn').addEventListener('click', () => addMeal());
+    document.getElementById('new-entry-btn').addEventListener('click', () => {
+      const iso = todayIso();
+      let entry = currentLog.entries.find(e => e.isoDate === iso);
+      if (!entry) {
+        entry = createEmptyEntry(iso);
+        currentLog.entries.push(entry);
+        saveLog(currentLog);
+      }
+      currentEntryId = entry.id;
+      renderEntrySelector(currentLog, currentEntryId);
+      renderEntry(entry);
+      renumberMeals();
+      assignSymptomGroupNames();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let activeEntry = null;
+      if (currentLog.entries.length === 0) {
+        activeEntry = createEmptyEntry(todayIso());
+        currentLog.entries.push(activeEntry);
+        saveLog(currentLog);
+      } else {
+        const sorted = [...currentLog.entries].sort((a, b) => (a.isoDate < b.isoDate ? 1 : -1));
+        activeEntry = sorted[0];
+      }
+      currentEntryId = activeEntry.id;
+      renderEntrySelector(currentLog, currentEntryId);
+      renderEntry(activeEntry);
+      renumberMeals();
+      assignSymptomGroupNames();
+    });
+  </script>
+</body>
+</html>
