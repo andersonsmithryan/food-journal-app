@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Food & Symptom Journal</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --border: #dfe3e8;
+      --text: #1f2933;
+      --muted: #52606d;
+      --accent: #2563eb;
+      --accent-2: #0ea5e9;
+      --danger: #dc2626;
+      --shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0 0 0.4rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: 2rem;
+      letter-spacing: -0.01em;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      color: var(--muted);
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      margin-top: 1.5rem;
+    }
+
+    h4 {
+      font-size: 0.95rem;
+      margin-top: 0;
+    }
+
+    p {
+      margin: 0.4rem 0;
+      color: var(--muted);
+    }
+
+    #app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .page-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .checkbox-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    input[type="time"],
+    input[type="number"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 0.65rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: #fdfdfd;
+      color: var(--text);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .date-inputs {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .date-display {
+      background: #fdfdfd;
+      cursor: pointer;
+    }
+
+    .date-picker {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .inline-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+      margin-bottom: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.1s ease, background-color 0.1s ease, border-color 0.1s ease;
+      text-decoration: none;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.95rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border: none;
+    }
+
+    .btn-ghost {
+      background: #f4f7fb;
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      border-color: #fecdd3;
+      color: #b91c1c;
+    }
+
+    .btn-small {
+      padding: 0.45rem 0.65rem;
+      font-size: 0.85rem;
+      border-radius: 8px;
+    }
+
+    .add-component-btn {
+      margin-top: 0.6rem;
+    }
+
+    .actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .meal-card {
+      border: 1px solid var(--border);
+    }
+
+    .meal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .meal-controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .components-container,
+    .ingredients-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .meal-name-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .quantity-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(120px, 140px);
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .component-card {
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 0.85rem;
+      background: #fafbfe;
+    }
+
+    .component-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .ingredient-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr)) auto;
+      gap: 0.5rem;
+      align-items: start;
+    }
+
+    .ingredient-row .toggle-details-btn {
+      grid-column: 1 / -1;
+      justify-self: flex-start;
+    }
+
+    .ingredient-details {
+      display: none;
+      grid-column: 1 / -1;
+      padding: 0.35rem;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      background: #fbfdff;
+      gap: 0.5rem;
+      flex-direction: column;
+    }
+
+    .ingredient-row.details-open .ingredient-details {
+      display: flex;
+    }
+
+    .ingredient-row .subingredients textarea {
+      width: 100%;
+      min-height: 72px;
+    }
+
+    .symptom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .symptom-field {
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 0.65rem 0.75rem;
+      background: #fbfdff;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      min-width: 0;
+    }
+
+    .range-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+    }
+
+    .range-value {
+      min-width: 32px;
+      text-align: right;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 0.35rem;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    td:last-child {
+      width: 48px;
+      text-align: right;
+    }
+
+    .small-input {
+      max-width: 160px;
+    }
+
+    .subingredients {
+      grid-column: 1 / -1;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .muted-text {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .premeal-locked {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .baseline-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+      .ingredient-row {
+        grid-template-columns: 1fr;
+      }
+
+      td:last-child {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="card" style="margin-bottom: 1.25rem;">
+      <div class="section-title" style="align-items: flex-end;">
+        <div>
+          <h3 style="margin-bottom: 0.15rem;">Entry selector</h3>
+          <p class="muted-text" style="margin: 0;">Pick an existing day or start a fresh entry for today.</p>
+        </div>
+        <div class="actions-bar" style="margin: 0;">
+          <select id="entry-select" class="small-input" style="min-width: 220px;"></select>
+          <button id="new-entry-btn" type="button" class="btn btn-primary">New entry for today</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Daily Food &amp; Symptom Journal</h1>
+      <h2>Track meals, ingredients, and how you feel afterward.</h2>
+    </div>
+
+    <div class="card premeal-card">
+      <label>
+        Date
+        <div class="date-inputs">
+          <input id="date-display" class="date-display" type="text" placeholder="DD MMM YYYY" autocomplete="off" readonly />
+          <input id="date-picker" class="date-picker" type="date" />
+        </div>
+      </label>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Pre-meal baseline</h3>
+        <p class="muted-text" style="margin: 0;">Rate how you feel before eating (0 = none, 10 = worst).</p>
+      </div>
+      <div class="grid-two" style="margin-bottom: 0.75rem;">
+        <label>
+          Baseline time
+          <div class="inline-row" style="gap: 0.5rem; align-items: center; margin: 0; flex-wrap: nowrap;">
+            <input id="baseline-time" type="time" />
+            <label class="checkbox-inline" style="margin: 0;">
+              <input type="checkbox" id="baseline-approx" />
+              Approximate
+            </label>
+          </div>
+        </label>
+      </div>
+      <div class="symptom-grid">
+        <div class="symptom-field">
+          <label>Tiredness / Fatigue</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="tirednessFatigue" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Facial Redness</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="facialRedness" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Facial Bloating</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="facialBloating" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Abdominal Bloating</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="abdominalBloating" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Flatulence</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="flatulence" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Constipation</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="constipation" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Hand Tremors</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="handTremors" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Dizziness</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="dizziness" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Sinus Pressure</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="sinusPressure" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+        <div class="symptom-field">
+          <label>Headache</label>
+          <div class="range-row">
+            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="headache" />
+            <span class="range-value">0</span>
+          </div>
+        </div>
+      </div>
+      <div class="baseline-actions">
+        <button type="button" class="btn btn-ghost btn-small finish-baseline-btn">✓ Finish Baseline</button>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h3>Meals</h3>
+      <div class="actions-bar">
+        <button id="add-meal-btn" type="button" class="btn btn-primary">+ Add Meal</button>
+        <button type="button" class="btn btn-primary" onclick="saveDraft()">Save draft</button>
+        <button type="button" class="btn btn-ghost" onclick="loadDraft()">Load draft</button>
+        <button type="button" class="btn btn-ghost" onclick="deleteDraft()">Delete draft</button>
+        <button type="button" class="btn btn-ghost" onclick="exportLog()">Export data</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">Save as PDF</button>
+      </div>
+    </div>
+
+    <div id="meals-container"></div>
+  </div>
+
+  <!-- Templates for dynamic pieces -->
+  <template id="component-template">
+    <div class="component-card">
+      <div class="component-header">
+        <h4 class="component-title">Ingredient</h4>
+        <button type="button" class="btn btn-danger btn-small remove-component-btn">Remove</button>
+      </div>
+      <button type="button" class="btn btn-ghost btn-small toggle-component-btn">+ Promote to Component</button>
+      <div class="component-name-row hidden">
+        <div class="grid-two">
+          <label>
+            Component name
+            <input type="text" placeholder="e.g. Curry Sauce / Chicken / Rice" class="component-name-input" />
+          </label>
+          <label>
+            Quantity (Optional)
+            <div class="quantity-row">
+              <input type="text" placeholder="e.g. 200" class="component-quantity-value" />
+              <select class="component-quantity-unit">
+                <option value="">Unit</option>
+                <option>g</option>
+                <option>ml</option>
+                <option>cup</option>
+                <option>tbsp</option>
+                <option>tsp</option>
+                <option>pc</option>
+              </select>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="ingredients-container"></div>
+      <button type="button" class="btn btn-ghost btn-small add-ingredient-btn hidden">+ Add to Component</button>
+      <button type="button" class="btn btn-ghost btn-small finish-component-btn">✓ Finish Logging</button>
+    </div>
+  </template>
+
+  <template id="ingredient-template">
+    <div class="ingredient-row">
+      <input type="text" placeholder="Ingredient / Product" class="ingredient-name" />
+      <div class="quantity-row">
+        <input type="text" placeholder="Quantity" class="ingredient-quantity-value" />
+        <select class="ingredient-quantity-unit">
+          <option value="">Unit</option>
+          <option>g</option>
+          <option>ml</option>
+          <option>cup</option>
+          <option>tbsp</option>
+          <option>tsp</option>
+          <option>pc</option>
+        </select>
+      </div>
+      <button type="button" class="btn btn-danger btn-small remove-ingredient-btn">✕</button>
+      <button type="button" class="btn btn-ghost btn-small toggle-details-btn">+ Add Sub-Ingredients</button>
+      <div class="ingredient-details">
+        <input type="text" placeholder="Brand / Source" class="ingredient-brand" />
+        <div class="subingredients">
+          <textarea placeholder="Sub-ingredients (for pre-made items), one per line (optional)"></textarea>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="timeline-row-template">
+    <tr>
+      <td>
+        <select class="timeline-symptom"></select>
+      </td>
+      <td><input type="time" class="small-input timeline-time" /></td>
+      <td><input type="number" min="0" class="small-input timeline-onset" readonly /></td>
+      <td><button type="button" class="btn btn-danger btn-small remove-timeline-row-btn">✕</button></td>
+    </tr>
+  </template>
+
+  <template id="meal-template">
+    <div class="card meal-card">
+      <div class="meal-header">
+        <div class="meal-title">Meal</div>
+        <div class="meal-controls">
+          <label>
+            Type
+            <select class="meal-type-select">
+              <option>Breakfast</option>
+              <option>Lunch</option>
+              <option>Dinner</option>
+              <option>Snack</option>
+              <option>Beverage</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>
+            Time eaten
+            <div class="inline-row" style="gap: 0.5rem; align-items: center; margin: 0; flex-wrap: nowrap;">
+              <input type="time" class="small-input meal-time-input" />
+              <label class="checkbox-inline" style="margin: 0;">
+                <input type="checkbox" class="meal-time-approx" />
+                Approximate
+              </label>
+            </div>
+          </label>
+          <button type="button" class="btn btn-danger btn-small remove-meal-btn">✕</button>
+        </div>
+      </div>
+
+      <h3>Meal Overview</h3>
+      <div class="grid-two">
+        <div class="meal-name-block">
+          <label>
+            Meal name
+            <input type="text" placeholder="e.g. Chicken Curry" class="meal-name-input" />
+          </label>
+          <button type="button" class="btn btn-ghost btn-small show-portion-btn">+ Add Portion Size</button>
+        </div>
+        <div class="portion-size-row hidden">
+          <label>
+            Portion size (optional)
+            <div class="quantity-row">
+              <input type="text" placeholder="e.g. 200" class="meal-portion-value" />
+              <select class="meal-portion-unit">
+                <option value="">Unit</option>
+                <option>g</option>
+                <option>ml</option>
+                <option>cup</option>
+                <option>tbsp</option>
+                <option>tsp</option>
+                <option>pc</option>
+              </select>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="inline-row" style="margin-top: 0.5rem;">
+        <span class="muted-text" style="font-weight: 700;">Preparation</span>
+        <label class="checkbox-inline"><input type="checkbox" class="meal-note-option" value="Home-Cooked" /> Home-Cooked</label>
+        <label class="checkbox-inline"><input type="checkbox" class="meal-note-option" value="Take-Away" /> Take-Away</label>
+        <label class="checkbox-inline"><input type="checkbox" class="meal-note-option" value="Restaurant" /> Restaurant</label>
+        <label class="checkbox-inline"><input type="checkbox" class="meal-note-option" value="Reheated" /> Reheated</label>
+      </div>
+
+      <div class="ingredients-section hidden">
+        <h3>Ingredients</h3>
+        <div class="components-container"></div>
+        <button type="button" class="btn btn-ghost btn-small add-component-btn">+ Add Ingredient</button>
+        <button type="button" class="btn btn-ghost btn-small finish-meal-btn">✓ Finish Logging</button>
+        <button type="button" class="btn btn-ghost btn-small log-symptoms-btn hidden">+ Log Symptoms for Meal</button>
+      </div>
+
+      <div class="symptom-section hidden">
+        <div class="section-title" style="margin-bottom: 0.35rem; align-items: flex-end;">
+          <h3 style="margin: 0;">Symptoms After Meal</h3>
+          <div class="inline-row" style="margin: 0; gap: 0.5rem; align-items: center; flex-wrap: nowrap;">
+            <label style="margin: 0;">
+              Symptom time
+              <input type="time" class="small-input symptom-time-input" />
+            </label>
+            <label class="checkbox-inline" style="margin: 0;">
+              <input type="checkbox" class="symptom-approx-checkbox" />
+              Approximate
+            </label>
+          </div>
+        </div>
+        <div class="symptom-grid">
+          <div class="symptom-field">
+            <label>Facial bloating</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="facialBloating" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Redness / flushing</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="rednessFlushing" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Fatigue</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="fatigue" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Palpitations</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="palpitations" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Hand Tremors</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="handTremors" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Dizziness</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="dizziness" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Sinus Pressure</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="sinusPressure" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Headache</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="headache" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Itchiness</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="itchiness" data-scope="symptoms" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Abdominal bloating</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="abdominalBloating" data-scope="digestion" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Flatulence</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="flatulence" data-scope="digestion" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Constipation</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="constipation" data-scope="digestion" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+          <div class="symptom-field">
+            <label>Diarrhoea</label>
+            <div class="range-row">
+              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="diarrhoea" data-scope="digestion" />
+              <span class="range-value">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-section hidden">
+        <h3>Timeline for Meal</h3>
+      <p class="muted-text">Document symptom onset to spot patterns.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Symptom</th>
+              <th>Time</th>
+              <th>Onset (min)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="timeline-body"></tbody>
+        </table>
+        <button type="button" class="btn btn-ghost btn-small add-timeline-row-btn">+ Add Symptom Event</button>
+        <button type="button" class="btn btn-ghost btn-small symptom-log-btn">+ Log Symptoms</button>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const STORAGE_KEY = 'foodJournalLog_v1';
+
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthLookup = monthNames.reduce((acc, m, idx) => {
+      acc[m.toLowerCase()] = idx;
+      return acc;
+    }, {});
+
+    function formatDisplayDate(dateInput) {
+      let d = null;
+      if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+        const [y, m, day] = dateInput.split('-').map(n => Number(n));
+        d = new Date(y, m - 1, day);
+      } else {
+        d = new Date(dateInput);
+      }
+      if (Number.isNaN(d.getTime())) return '';
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${day} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function todayIso() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function currentTimeHHMM() {
+      const d = new Date();
+      const h = String(d.getHours()).padStart(2, '0');
+      const m = String(d.getMinutes()).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+
+    function displayToIso(displayDate) {
+      const match = (displayDate || '').trim().match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})$/);
+      if (!match) return null;
+      const day = Number(match[1]);
+      const monthIdx = monthLookup[match[2].toLowerCase()];
+      const year = Number(match[3]);
+      if (Number.isNaN(day) || Number.isNaN(monthIdx) || Number.isNaN(year)) return null;
+      const isoMonth = String(monthIdx + 1).padStart(2, '0');
+      const isoDay = String(day).padStart(2, '0');
+      return `${year}-${isoMonth}-${isoDay}`;
+    }
+
+    function randomId() {
+      const hasCrypto = typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function';
+      const base = hasCrypto ? window.crypto.randomUUID() : Math.random().toString(36).slice(2);
+      return `${base}-${Date.now()}`;
+    }
+
+    function loadLog() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { version: 1, entries: [] };
+        const parsed = JSON.parse(raw);
+        if (!parsed.version || !Array.isArray(parsed.entries)) {
+          return { version: 1, entries: [] };
+        }
+        parsed.entries = parsed.entries.map(entry => ({
+          ...entry,
+          displayDate: entry.displayDate || formatDisplayDate(entry.isoDate)
+        }));
+        return parsed;
+      } catch (e) {
+        console.error('Failed to load log', e);
+        return { version: 1, entries: [] };
+      }
+    }
+
+    function saveLog(log) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(log));
+    }
+
+    const preMealKeys = [
+      'tirednessFatigue',
+      'facialRedness',
+      'facialBloating',
+      'abdominalBloating',
+      'flatulence',
+      'constipation',
+      'handTremors',
+      'dizziness',
+      'sinusPressure',
+      'headache'
+    ];
+
+    function defaultPreMealState() {
+      return preMealKeys.reduce((acc, key) => {
+        acc[key] = 0;
+        return acc;
+      }, {});
+    }
+
+    function createEmptyEntry(isoDate) {
+      return {
+        id: isoDate,
+        isoDate,
+        displayDate: formatDisplayDate(isoDate),
+        notesForToday: '',
+        preMealState: defaultPreMealState(),
+        preMealTime: currentTimeHHMM(),
+        preMealApprox: false,
+        preMealLocked: false,
+        meals: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    const timelineSymptomOptions = [
+      'Tiredness / Fatigue',
+      'Facial Redness',
+      'Facial Bloating',
+      'Abdominal Bloating',
+      'Flatulence',
+      'Constipation',
+      'Diarrhoea',
+      'Hand Tremors',
+      'Dizziness',
+      'Sinus Pressure',
+      'Headache',
+      'Palpitations',
+      'Itchiness'
+    ];
+
+    const quantityUnits = ['g', 'ml', 'cup', 'tbsp', 'tsp', 'pc'];
+
+    function parseQuantity(value) {
+      if (!value || typeof value !== 'string') {
+        return { amount: '', unit: '' };
+      }
+      const trimmed = value.trim();
+      if (!trimmed) return { amount: '', unit: '' };
+      const compactMatch = trimmed.match(/^(.+?)(g|ml|cup|tbsp|tsp|pc)$/i);
+      if (compactMatch && quantityUnits.includes(compactMatch[2])) {
+        return { amount: compactMatch[1].trim(), unit: compactMatch[2] };
+      }
+      const parts = trimmed.split(/\s+/);
+      const last = parts[parts.length - 1];
+      if (quantityUnits.includes(last)) {
+        return { amount: parts.slice(0, -1).join(' '), unit: last };
+      }
+      return { amount: trimmed, unit: '' };
+    }
+
+    function setQuantityFields(valueInput, unitSelect, storedValue) {
+      if (!valueInput || !unitSelect) return;
+      const parsed = parseQuantity(storedValue || '');
+      valueInput.value = parsed.amount;
+      unitSelect.value = parsed.unit;
+    }
+
+    function collectQuantity(valueInput, unitSelect) {
+      if (!valueInput || !unitSelect) return '';
+      const amount = (valueInput.value || '').trim();
+      const unit = (unitSelect.value || '').trim();
+      if (!amount && !unit) return '';
+      return unit ? `${amount} ${unit}`.trim() : amount;
+    }
+
+    function populateTimelineSymptomSelect(select, selectedValue) {
+      if (!select) return;
+      select.innerHTML = '';
+      timelineSymptomOptions.forEach(label => {
+        const opt = document.createElement('option');
+        opt.value = label;
+        opt.textContent = label;
+        select.appendChild(opt);
+      });
+      if (selectedValue && timelineSymptomOptions.includes(selectedValue)) {
+        select.value = selectedValue;
+      } else if (timelineSymptomOptions.length) {
+        select.value = timelineSymptomOptions[0];
+      }
+    }
+
+    function setRangeValue(rangeEl, value = 0) {
+      if (!rangeEl) return;
+      const num = Number.isFinite(Number(value)) ? Number(value) : 0;
+      rangeEl.value = num;
+      const parent = rangeEl.parentElement;
+      const display = parent ? parent.querySelector('.range-value') : null;
+      if (display) display.textContent = String(num);
+    }
+
+    function collectPreMealState() {
+      const state = defaultPreMealState();
+      document.querySelectorAll('.premeal-range').forEach(range => {
+        const key = range.dataset.key;
+        if (!key) return;
+        state[key] = Number(range.value) || 0;
+      });
+      return state;
+    }
+
+    function populatePreMealState(state = {}) {
+      const merged = { ...defaultPreMealState(), ...(state || {}) };
+      document.querySelectorAll('.premeal-range').forEach(range => {
+        const key = range.dataset.key;
+        setRangeValue(range, merged[key]);
+      });
+    }
+
+    function setSymptomSliderValues(card, symptoms = {}, digestion = {}) {
+      card.querySelectorAll('.symptom-range').forEach(range => {
+        const group = range.dataset.group;
+        const scope = range.dataset.scope;
+        let val;
+        if (scope === 'digestion') {
+          val = digestion[group];
+        } else {
+          val = symptoms[group];
+          if (group === 'handTremors' && typeof val === 'undefined') {
+            val = symptoms.tremor;
+          }
+        }
+        setRangeValue(range, Number.isFinite(val) ? val : 0);
+      });
+    }
+
+    function parseMealNotesValue(value) {
+      if (Array.isArray(value)) return value;
+      if (typeof value === 'string') {
+        return value
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean);
+      }
+      return [];
+    }
+
+    function setMealNotes(card, value) {
+      const selected = parseMealNotesValue(value);
+      const checkboxes = card.querySelectorAll('.meal-note-option');
+      checkboxes.forEach(cb => {
+        cb.checked = selected.includes(cb.value);
+      });
+    }
+
+    function getSelectedMealNotes(card) {
+      const checkboxes = card.querySelectorAll('.meal-note-option');
+      return Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+    }
+
+    function parseTimeToMinutes(value) {
+      if (!value || typeof value !== 'string') return null;
+      const parts = value.split(':');
+      if (parts.length < 2) return null;
+      const h = Number(parts[0]);
+      const m = Number(parts[1]);
+      if (Number.isNaN(h) || Number.isNaN(m)) return null;
+      return h * 60 + m;
+    }
+
+    function updateTimelineOnsetForRow(tr) {
+      if (!tr) return;
+      const mealCard = tr.closest('.meal-card');
+      const mealTimeInput = mealCard ? mealCard.querySelector('.meal-time-input') : null;
+      const mealMinutes = mealTimeInput ? parseTimeToMinutes(mealTimeInput.value) : null;
+      const timeInput = tr.querySelector('.timeline-time');
+      const onsetInput = tr.querySelector('.timeline-onset');
+      const eventMinutes = timeInput ? parseTimeToMinutes(timeInput.value) : null;
+      if (mealMinutes === null || eventMinutes === null) {
+        if (onsetInput) onsetInput.value = '';
+        return;
+      }
+      const diff = Math.max(0, eventMinutes - mealMinutes);
+      if (onsetInput) onsetInput.value = diff;
+    }
+
+    function updateAllTimelineOnsets(mealCard) {
+      if (!mealCard) return;
+      const rows = mealCard.querySelectorAll('.timeline-body tr');
+      rows.forEach(row => updateTimelineOnsetForRow(row));
+    }
+
+    function sortMealsByTime() {
+      const container = document.getElementById('meals-container');
+      if (!container) return;
+      const cards = Array.from(container.querySelectorAll('.meal-card'));
+      const sorted = cards
+        .map((card, idx) => {
+          const timeInput = card.querySelector('.meal-time-input');
+          const minutes = timeInput ? parseTimeToMinutes(timeInput.value) : null;
+          return {
+            card,
+            key: minutes === null ? Number.POSITIVE_INFINITY : minutes,
+            idx
+          };
+        })
+        .sort((a, b) => (a.key - b.key) || (a.idx - b.idx));
+      sorted.forEach(entry => container.appendChild(entry.card));
+      renumberMeals();
+    }
+
+    function shouldShowIngredientsSection(card) {
+      if (!card) return false;
+      const mealName = (card.querySelector('.meal-name-input') || {}).value || '';
+      const prepSelected = card.querySelectorAll('.meal-note-option:checked').length > 0;
+      return !!(mealName.trim() && prepSelected);
+    }
+
+    function updateAddIngredientButtonLabel(card) {
+      if (!card) return;
+      const btn = card.querySelector('.add-component-btn');
+      const mealNameInput = card.querySelector('.meal-name-input');
+      if (!btn) return;
+      const name = mealNameInput && mealNameInput.value ? mealNameInput.value.trim() : '';
+      btn.textContent = name ? `+ Add Ingredient to ${name}` : '+ Add Ingredient';
+    }
+
+    function updateFinishMealButtonLabel(card) {
+      if (!card) return;
+      const btn = card.querySelector('.finish-meal-btn');
+      if (!btn) return;
+      const mealNameInput = card.querySelector('.meal-name-input');
+      const name = mealNameInput && mealNameInput.value ? mealNameInput.value.trim() : 'Meal';
+      btn.textContent = `✓ Finish Logging ${name}`;
+    }
+
+    function updateLogSymptomsButtonLabel(card) {
+      if (!card) return;
+      const btn = card.querySelector('.log-symptoms-btn');
+      if (!btn) return;
+      const mealNameInput = card.querySelector('.meal-name-input');
+      const name = mealNameInput && mealNameInput.value ? mealNameInput.value.trim() : 'Meal';
+      btn.textContent = `+ Log Symptoms for ${name}`;
+    }
+
+    function shouldShowSymptomsSection(card) {
+      if (!card) return false;
+      const ingredientNames = card.querySelectorAll('.ingredient-name');
+      for (let i = 0; i < ingredientNames.length; i++) {
+        if ((ingredientNames[i].value || '').trim()) return true;
+      }
+      return false;
+    }
+
+    function updateIngredientsVisibility(card) {
+      if (!card) return;
+      const section = card.querySelector('.ingredients-section');
+      if (!section) return;
+      const show = shouldShowIngredientsSection(card);
+      section.classList.toggle('hidden', !show);
+      updateAddIngredientButtonLabel(card);
+    }
+
+    function updateTimelineVisibility(card) {
+      if (!card) return;
+      const section = card.querySelector('.timeline-section');
+      if (!section) return;
+      const rows = card.querySelectorAll('.timeline-body tr');
+      const symptomRanges = card.querySelectorAll('.symptom-range');
+      let hasSymptomValue = false;
+      symptomRanges.forEach(range => {
+        if (Number(range.value) > 0) hasSymptomValue = true;
+      });
+      const unlocked = card.dataset.symptomsUnlocked === '1';
+      const show = unlocked && (hasSymptomValue || rows.length > 0);
+      section.classList.toggle('hidden', !show);
+    }
+
+    function updateSymptomSectionVisibility(card) {
+      if (!card) return;
+      const section = card.querySelector('.symptom-section');
+      if (!section) return;
+      const show = card.dataset.symptomsUnlocked === '1';
+      section.classList.toggle('hidden', !show);
+      updateTimelineVisibility(card);
+    }
+
+    function setMealFinishedState(card, finished) {
+      if (!card) return;
+      card.dataset.mealFinished = finished ? '1' : '0';
+      const addBtn = card.querySelector('.add-component-btn');
+      const finishBtn = card.querySelector('.finish-meal-btn');
+      const logBtn = card.querySelector('.log-symptoms-btn');
+      if (addBtn) addBtn.classList.toggle('hidden', !!finished);
+      if (finishBtn) finishBtn.classList.toggle('hidden', !!finished);
+      if (logBtn) logBtn.classList.toggle('hidden', !finished);
+      updateAddIngredientButtonLabel(card);
+      updateFinishMealButtonLabel(card);
+      updateLogSymptomsButtonLabel(card);
+    }
+
+    function refreshRangeDisplays() {
+      document.querySelectorAll('.range-input').forEach(range => {
+        setRangeValue(range, Number(range.value) || 0);
+      });
+    }
+
+    function setBaselineLocked(locked) {
+      const card = document.querySelector('.premeal-card');
+      const btn = document.querySelector('.finish-baseline-btn');
+      const isLocked = !!locked;
+      if (card) card.classList.toggle('premeal-locked', isLocked);
+      if (btn) {
+        btn.textContent = isLocked ? '✓ Baseline Saved' : '✓ Finish Baseline';
+      }
+    }
+
+    function setComponentMode(card, enabled) {
+      const title = card.querySelector('.component-title');
+      const nameRow = card.querySelector('.component-name-row');
+      const addBtn = card.querySelector('.add-ingredient-btn');
+      const toggleBtn = card.querySelector('.toggle-component-btn');
+      if (nameRow) nameRow.classList.toggle('hidden', !enabled);
+      if (toggleBtn) toggleBtn.classList.toggle('hidden', enabled);
+      card.dataset.componentMode = enabled ? '1' : '0';
+      updateComponentTitle(card);
+      updateAddToComponentButton(card);
+      updateComponentToggleButton(card);
+      updateFinishComponentButtonLabel(card);
+    }
+
+    function setComponentFinished(card, finished) {
+      if (!card) return;
+      card.dataset.finished = finished ? '1' : '0';
+      const addBtn = card.querySelector('.add-ingredient-btn');
+      const toggleBtn = card.querySelector('.toggle-component-btn');
+      const finishBtn = card.querySelector('.finish-component-btn');
+      if (addBtn) addBtn.classList.toggle('hidden', !!finished || card.dataset.componentMode !== '1');
+      if (toggleBtn) toggleBtn.classList.toggle('hidden', !!finished || card.dataset.componentMode === '1');
+      card.querySelectorAll('.toggle-details-btn').forEach(btn => btn.classList.toggle('hidden', !!finished));
+      if (finishBtn) finishBtn.classList.toggle('hidden', false);
+      updateFinishComponentButtonLabel(card);
+    }
+
+    function promoteIngredientToComponent(card) {
+      if (!card) return;
+      const firstRow = card.querySelector('.ingredient-row');
+      const compNameInput = card.querySelector('.component-name-input');
+      const compQtyValueInput = card.querySelector('.component-quantity-value');
+      const compQtyUnitSelect = card.querySelector('.component-quantity-unit');
+      if (!firstRow) return;
+      const ingNameInput = firstRow.querySelector('.ingredient-name');
+      const ingQtyValueInput = firstRow.querySelector('.ingredient-quantity-value');
+      const ingQtyUnitSelect = firstRow.querySelector('.ingredient-quantity-unit');
+      const ingNameVal = ingNameInput && ingNameInput.value ? ingNameInput.value.trim() : '';
+      const ingQtyVal = collectQuantity(ingQtyValueInput, ingQtyUnitSelect);
+      if (compNameInput && ingNameVal) {
+        compNameInput.value = ingNameVal;
+        ingNameInput.value = '';
+      }
+      if (ingQtyVal) {
+        setQuantityFields(compQtyValueInput, compQtyUnitSelect, ingQtyVal);
+        if (ingQtyValueInput) ingQtyValueInput.value = '';
+        if (ingQtyUnitSelect) ingQtyUnitSelect.value = '';
+      }
+      updateIngredientRowActions(firstRow);
+      updateComponentTitle(card);
+      updateAddToComponentButton(card);
+      updateFinishComponentButtonLabel(card);
+    }
+
+    function updateComponentTitle(card) {
+      if (!card) return;
+      const title = card.querySelector('.component-title');
+      if (!title) return;
+      const nameInput = card.querySelector('.component-name-input');
+      const ingredientInputs = card.querySelectorAll('.ingredient-name');
+      const componentMode = card.dataset.componentMode === '1';
+      let label = '';
+      if (nameInput && nameInput.value && nameInput.value.trim()) {
+        label = nameInput.value.trim();
+      } else {
+        for (let i = 0; i < ingredientInputs.length; i++) {
+          const val = ingredientInputs[i].value || '';
+          if (val.trim()) {
+            label = val.trim();
+            break;
+          }
+        }
+      }
+      if (!label) {
+        label = componentMode ? 'Component' : 'Ingredient';
+      }
+      title.textContent = label;
+      updateFinishComponentButtonLabel(card);
+    }
+
+    function getFirstIngredientName(card) {
+      const inputs = card ? card.querySelectorAll('.ingredient-name') : [];
+      for (let i = 0; i < inputs.length; i++) {
+        if (inputs[i].value && inputs[i].value.trim()) return inputs[i].value.trim();
+      }
+      return '';
+    }
+
+    function updateComponentToggleButton(card) {
+      if (!card) return;
+      const toggleBtn = card.querySelector('.toggle-component-btn');
+      if (!toggleBtn) return;
+      if (card.dataset.componentMode === '1') {
+        toggleBtn.classList.add('hidden');
+        return;
+      }
+      const ingName = getFirstIngredientName(card);
+      const show = !!ingName;
+      toggleBtn.classList.toggle('hidden', !show);
+      if (show) {
+        toggleBtn.textContent = `+ Promote ${ingName} to Component`;
+      } else {
+        toggleBtn.textContent = '+ Promote to Component';
+      }
+    }
+
+    function updateAddToComponentButton(card) {
+      if (!card) return;
+      const addBtn = card.querySelector('.add-ingredient-btn');
+      const nameInput = card.querySelector('.component-name-input');
+      const hasName = !!(nameInput && nameInput.value && nameInput.value.trim());
+      const finished = card.dataset.finished === '1';
+      if (addBtn) {
+        addBtn.classList.toggle('hidden', finished || !hasName || card.dataset.componentMode !== '1');
+        if (hasName) {
+          addBtn.textContent = `+ Add Ingredient to ${nameInput.value.trim()}`;
+        } else {
+          addBtn.textContent = '+ Add to Component';
+        }
+      }
+    }
+
+    function updateFinishComponentButtonLabel(card) {
+      if (!card) return;
+      const btn = card.querySelector('.finish-component-btn');
+      if (!btn) return;
+      const title = card.querySelector('.component-title');
+      const label = (title && title.textContent && title.textContent.trim()) ? title.textContent.trim() : 'Item';
+      btn.textContent = `✓ Finish Logging ${label}`;
+    }
+
+    function updateIngredientRowActions(row) {
+      if (!row) return;
+      const nameInput = row.querySelector('.ingredient-name');
+      const toggleDetails = row.querySelector('.toggle-details-btn');
+      const nameVal = nameInput && nameInput.value ? nameInput.value.trim() : '';
+      const show = !!nameVal;
+      if (toggleDetails) {
+        toggleDetails.classList.toggle('hidden', !show);
+        if (row.classList.contains('details-open')) {
+          toggleDetails.textContent = 'Hide Sub-Ingredients';
+        } else {
+          toggleDetails.textContent = show ? `+ Add Ingredients to ${nameVal}` : '+ Add Sub-Ingredients';
+        }
+      }
+      const card = row.closest('.component-card');
+      updateComponentToggleButton(card);
+      updateComponentTitle(card);
+      updateFinishComponentButtonLabel(card);
+    }
+
+    function createComponent(data = {}) {
+      const tmpl = document.getElementById('component-template');
+      const node = tmpl.content.cloneNode(true);
+      const card = node.querySelector('.component-card');
+      card.dataset.id = data.id || randomId();
+      const nameInput = card.querySelector('.component-name-input');
+      const qtyValueInput = card.querySelector('.component-quantity-value');
+      const qtyUnitSelect = card.querySelector('.component-quantity-unit');
+      const ingredientsContainer = card.querySelector('.ingredients-container');
+      if (nameInput && data.name) nameInput.value = data.name;
+      if (data.quantity) setQuantityFields(qtyValueInput, qtyUnitSelect, data.quantity);
+      const ingredients = data.ingredients && data.ingredients.length ? data.ingredients : [];
+      if (ingredients.length === 0) {
+        addIngredient(ingredientsContainer);
+      } else {
+        ingredients.forEach(ing => addIngredient(ingredientsContainer, ing));
+      }
+      const hasComponentName = !!(data.name && data.name.trim());
+      const isComponentMode = hasComponentName || (ingredients && ingredients.length > 1);
+      setComponentMode(card, isComponentMode);
+      if (hasComponentName && nameInput) nameInput.value = data.name;
+      setComponentFinished(card, false);
+      updateComponentTitle(card);
+      updateComponentToggleButton(card);
+      updateAddToComponentButton(card);
+      updateFinishComponentButtonLabel(card);
+      return card;
+    }
+
+    function setIngredientDetailsVisibility(row, open) {
+      if (!row) return;
+      if (open) {
+        row.classList.add('details-open');
+      } else {
+        row.classList.remove('details-open');
+      }
+      updateIngredientRowActions(row);
+    }
+
+    function addIngredient(container, data = {}) {
+      const compCardGuard = container ? container.closest('.component-card') : null;
+      if (compCardGuard && compCardGuard.dataset.finished === '1') return null;
+      const tmpl = document.getElementById('ingredient-template');
+      const fragment = tmpl.content.cloneNode(true);
+      const row = fragment.querySelector('.ingredient-row');
+      row.dataset.id = data.id || randomId();
+      const nameInput = row.querySelector('.ingredient-name');
+      const qtyValueInput = row.querySelector('.ingredient-quantity-value');
+      const qtyUnitSelect = row.querySelector('.ingredient-quantity-unit');
+      const brandInput = row.querySelector('.ingredient-brand');
+      const textarea = row.querySelector('textarea');
+      if (nameInput) nameInput.value = data.name || '';
+      if (data.quantity) setQuantityFields(qtyValueInput, qtyUnitSelect, data.quantity);
+      if (brandInput) brandInput.value = data.brandSource || data.brand || '';
+      if (textarea) textarea.value = Array.isArray(data.subIngredients) ? data.subIngredients.join('\n') : data.subingredients || '';
+      const hasDetails = (brandInput && brandInput.value) || (textarea && textarea.value.trim());
+      container.appendChild(fragment);
+      setIngredientDetailsVisibility(row, !!hasDetails);
+      updateIngredientRowActions(row);
+      updateAddToComponentButton(container.closest('.component-card'));
+      updateComponentTitle(container.closest('.component-card'));
+      return row;
+    }
+
+    function addTimelineRow(tbody, data = {}) {
+      const tmpl = document.getElementById('timeline-row-template');
+      const fragment = tmpl.content.cloneNode(true);
+      const tr = fragment.querySelector('tr');
+      tr.dataset.id = data.id || randomId();
+      const select = tr.querySelector('.timeline-symptom');
+      populateTimelineSymptomSelect(select, data.symptomLabel || data.symptom || '');
+      const timeInput = tr.querySelector('.timeline-time');
+      const onsetInput = tr.querySelector('.timeline-onset');
+      if (timeInput) timeInput.value = data.eventTime || currentTimeHHMM();
+      tbody.appendChild(fragment);
+      if (data.onsetMinutes != null && data.onsetMinutes !== '' && (!timeInput || !timeInput.value)) {
+        if (onsetInput) onsetInput.value = data.onsetMinutes;
+      } else {
+        updateTimelineOnsetForRow(tr);
+      }
+      const card = tbody.closest('.meal-card');
+      if (card) updateTimelineVisibility(card);
+      return tr;
+    }
+
+    function createMealCard(data = {}) {
+      const tmpl = document.getElementById('meal-template');
+      const fragment = tmpl.content.cloneNode(true);
+      const card = fragment.querySelector('.meal-card');
+      card.dataset.id = data.id || randomId();
+      const typeSelect = card.querySelector('.meal-type-select');
+      const timeInput = card.querySelector('.meal-time-input');
+      const mealNameInput = card.querySelector('.meal-name-input');
+      const portionValueInput = card.querySelector('.meal-portion-value');
+      const portionUnitSelect = card.querySelector('.meal-portion-unit');
+      const portionRow = card.querySelector('.portion-size-row');
+      const portionToggleBtn = card.querySelector('.show-portion-btn');
+      const symptomTimeInput = card.querySelector('.symptom-time-input');
+      const symptomApproxInput = card.querySelector('.symptom-approx-checkbox');
+      const componentsContainer = card.querySelector('.components-container');
+      const timelineBody = card.querySelector('.timeline-body');
+      const mealTitle = card.querySelector('.meal-title');
+
+      if (data.type && typeSelect) typeSelect.value = data.type;
+      if (mealTitle && typeSelect) {
+        mealTitle.textContent = typeSelect.value || 'Meal';
+      }
+      if (timeInput) timeInput.value = data.timeEaten || currentTimeHHMM();
+      const timeApprox = card.querySelector('.meal-time-approx');
+      if (timeApprox) timeApprox.checked = !!data.timeApprox;
+      if (data.mealName && mealNameInput) mealNameInput.value = data.mealName;
+      if (data.portionSize) {
+        setQuantityFields(portionValueInput, portionUnitSelect, data.portionSize);
+      }
+      if (portionRow) {
+        const hasPortion = !!(data.portionSize && String(data.portionSize).trim());
+        portionRow.classList.toggle('hidden', !hasPortion);
+        if (portionToggleBtn) portionToggleBtn.classList.toggle('hidden', hasPortion);
+      }
+      setMealNotes(card, data.notes);
+      if (symptomTimeInput) symptomTimeInput.value = data.symptomTime || '';
+      if (symptomApproxInput) symptomApproxInput.checked = !!data.symptomApprox;
+
+      const components = data.components && data.components.length ? data.components : [];
+      components.forEach(comp => {
+        const compEl = createComponent(comp);
+        componentsContainer.appendChild(compEl);
+      });
+
+      const symptoms = data.symptoms || {};
+      const digestion = data.digestion || {};
+      setSymptomSliderValues(card, symptoms, digestion);
+
+      const timeline = data.timeline && data.timeline.length ? data.timeline : [];
+      if (timeline.length > 0) {
+        timeline.forEach(entry => addTimelineRow(timelineBody, entry));
+      }
+
+      const hasSymptomData = Object.values(symptoms || {}).some(v => Number(v) > 0) ||
+        Object.values(digestion || {}).some(v => Number(v) > 0) ||
+        (timeline && timeline.length > 0) || (data.symptomTime && data.symptomTime.trim());
+
+      setMealFinishedState(card, hasSymptomData);
+      setSymptomsUnlocked(card, hasSymptomData);
+      updateFinishMealButtonLabel(card);
+      updateLogSymptomsButtonLabel(card);
+
+      updateAddIngredientButtonLabel(card);
+      updateIngredientsVisibility(card);
+      updateSymptomSectionVisibility(card);
+      updateTimelineVisibility(card);
+
+      return card;
+    }
+
+    function addMeal(data = {}) {
+      const container = document.getElementById('meals-container');
+      const card = createMealCard(data);
+      container.appendChild(card);
+      sortMealsByTime();
+      return card;
+    }
+
+    function renumberMeals() {
+      const cards = document.querySelectorAll('.meal-card');
+      cards.forEach((card) => {
+        const typeSelect = card.querySelector('.meal-type-select');
+        const title = card.querySelector('.meal-title');
+        const type = typeSelect ? typeSelect.value : 'Meal';
+        if (title) title.textContent = type;
+      });
+    }
+
+    function collectMeal(card, index) {
+      const meal = {
+        id: card.dataset.id || randomId(),
+        index: index + 1,
+        type: (card.querySelector('.meal-type-select') || {}).value || 'Breakfast',
+        timeEaten: (card.querySelector('.meal-time-input') || {}).value || null,
+        timeApprox: !!(card.querySelector('.meal-time-approx') && card.querySelector('.meal-time-approx').checked),
+        mealName: (card.querySelector('.meal-name-input') || {}).value || '',
+        portionSize: collectQuantity(
+          card.querySelector('.meal-portion-value'),
+          card.querySelector('.meal-portion-unit')
+        ),
+        symptomTime: (card.querySelector('.symptom-time-input') || {}).value || '',
+        symptomApprox: !!(card.querySelector('.symptom-approx-checkbox') && card.querySelector('.symptom-approx-checkbox').checked),
+        notes: '',
+        components: [],
+        symptoms: {
+          facialBloating: 0,
+          rednessFlushing: 0,
+          fatigue: 0,
+          palpitations: 0,
+          handTremors: 0,
+          dizziness: 0,
+          sinusPressure: 0,
+          headache: 0,
+          itchiness: 0
+        },
+        digestion: {
+          abdominalBloating: 0,
+          flatulence: 0,
+          constipation: 0,
+          diarrhoea: 0
+        },
+        timeline: []
+      };
+
+      const noteSelections = getSelectedMealNotes(card);
+      meal.notes = noteSelections.join(', ');
+
+      const components = card.querySelectorAll('.component-card');
+      components.forEach(comp => {
+        const compData = {
+          id: comp.dataset.id || randomId(),
+          name: (comp.querySelector('.component-name-input') || {}).value || '',
+          quantity: collectQuantity(
+            comp.querySelector('.component-quantity-value'),
+            comp.querySelector('.component-quantity-unit')
+          ),
+          ingredients: []
+        };
+        const ingRows = comp.querySelectorAll('.ingredient-row');
+        ingRows.forEach(row => {
+          const nameInput = row.querySelector('.ingredient-name');
+          const brandInput = row.querySelector('.ingredient-brand');
+          const qtyValueInput = row.querySelector('.ingredient-quantity-value');
+          const qtyUnitSelect = row.querySelector('.ingredient-quantity-unit');
+          const subText = row.querySelector('textarea');
+          const subParts = ((subText && subText.value) ? subText.value : '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+          compData.ingredients.push({
+            id: row.dataset.id || randomId(),
+            name: nameInput ? nameInput.value : '',
+            brandSource: brandInput ? brandInput.value : '',
+            quantity: collectQuantity(qtyValueInput, qtyUnitSelect),
+            subIngredients: subParts
+          });
+        });
+        meal.components.push(compData);
+      });
+
+      const symptomRanges = card.querySelectorAll('.symptom-range');
+      symptomRanges.forEach(range => {
+        const group = range.dataset.group;
+        const scope = range.dataset.scope;
+        const value = Number(range.value) || 0;
+        if (scope === 'digestion') {
+          meal.digestion[group] = value;
+        } else {
+          meal.symptoms[group] = value;
+        }
+      });
+
+      const timelineRows = card.querySelectorAll('.timeline-body tr');
+      timelineRows.forEach(tr => {
+        const symptomSelect = tr.querySelector('.timeline-symptom');
+        const timeInput = tr.querySelector('.timeline-time');
+        const onsetInput = tr.querySelector('.timeline-onset');
+        meal.timeline.push({
+          id: tr.dataset.id || randomId(),
+          symptomLabel: symptomSelect ? symptomSelect.value : '',
+          eventTime: timeInput ? timeInput.value : '',
+          onsetMinutes: onsetInput && onsetInput.value !== '' ? Number(onsetInput.value) : 0
+        });
+      });
+
+      return meal;
+    }
+
+    function collectEntryFromUI(existing) {
+      const cards = Array.from(document.querySelectorAll('.meal-card'));
+      const meals = cards.map((card, idx) => collectMeal(card, idx));
+      const dateDisplay = document.getElementById('date-display');
+      const datePicker = document.getElementById('date-picker');
+      const baselineTimeField = document.getElementById('baseline-time');
+      const baselineApproxField = document.getElementById('baseline-approx');
+      const baselineCard = document.querySelector('.premeal-card');
+      const displayDate = dateDisplay ? dateDisplay.value : formatDisplayDate(new Date());
+      const pickerValue = datePicker ? datePicker.value : '';
+      const parsedIso = pickerValue || displayToIso(displayDate);
+      const isoDate = parsedIso || (existing && existing.isoDate) || todayIso();
+      const now = new Date().toISOString();
+      const preMealLocked = baselineCard ? baselineCard.classList.contains('premeal-locked') : false;
+      return {
+        id: (existing && existing.id) || isoDate,
+        isoDate,
+        displayDate: displayDate || (existing && existing.displayDate) || formatDisplayDate(isoDate),
+        notesForToday: (existing && existing.notesForToday) || '',
+        preMealState: collectPreMealState(),
+        preMealTime: baselineTimeField && baselineTimeField.value ? baselineTimeField.value : (existing && existing.preMealTime) || currentTimeHHMM(),
+        preMealApprox: baselineApproxField ? !!baselineApproxField.checked : (existing && existing.preMealApprox) || false,
+        preMealLocked,
+        meals,
+        createdAt: (existing && existing.createdAt) || now,
+        updatedAt: now
+      };
+    }
+
+    function renderEntry(entry) {
+      const dateDisplay = document.getElementById('date-display');
+      const datePicker = document.getElementById('date-picker');
+      if (datePicker) datePicker.value = entry.isoDate || '';
+      updateDateDisplay(entry.isoDate);
+      const baselineTimeField = document.getElementById('baseline-time');
+      if (baselineTimeField) baselineTimeField.value = entry.preMealTime || currentTimeHHMM();
+      const baselineApproxField = document.getElementById('baseline-approx');
+      if (baselineApproxField) baselineApproxField.checked = !!entry.preMealApprox;
+      setBaselineLocked(!!entry.preMealLocked);
+      populatePreMealState(entry.preMealState);
+
+      const container = document.getElementById('meals-container');
+      container.innerHTML = '';
+      if (entry.meals && entry.meals.length) {
+        entry.meals
+          .sort(function (a, b) { return (a.index || 0) - (b.index || 0); })
+          .forEach(function (meal) { addMeal(meal); });
+      }
+      refreshRangeDisplays();
+      document.querySelectorAll('.meal-card').forEach(card => updateAllTimelineOnsets(card));
+      sortMealsByTime();
+    }
+
+    function renderEntrySelector(log, currentId) {
+      const select = document.getElementById('entry-select');
+      select.innerHTML = '';
+      const entries = [...log.entries].sort((a, b) => (a.isoDate < b.isoDate ? 1 : -1));
+      if (entries.length === 0) {
+        const opt = document.createElement('option');
+        opt.textContent = 'No saved entries yet';
+        opt.disabled = true;
+        opt.selected = true;
+        select.appendChild(opt);
+        return;
+      }
+      entries.forEach(entry => {
+        const opt = document.createElement('option');
+        opt.value = entry.id;
+        const label = entry.displayDate || formatDisplayDate(entry.isoDate) || entry.isoDate;
+        opt.textContent = `${label}`;
+        if (entry.id === currentId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function upsertEntry(log, entry) {
+      const existingIdx = log.entries.findIndex(e => e.isoDate === entry.isoDate);
+      if (existingIdx >= 0) {
+        log.entries[existingIdx] = { ...log.entries[existingIdx], ...entry };
+      } else {
+        log.entries.push(entry);
+      }
+    }
+
+    function ensureEntryForDate(log, isoDate) {
+      let entry = log.entries.find(e => e.isoDate === isoDate);
+      if (!entry) {
+        entry = createEmptyEntry(isoDate);
+        log.entries.push(entry);
+        saveLog(log);
+      }
+      return entry;
+    }
+
+    function updateDateDisplay(isoDate) {
+      const dateDisplay = document.getElementById('date-display');
+      if (dateDisplay) {
+        dateDisplay.value = isoDate ? formatDisplayDate(isoDate) : '';
+      }
+    }
+
+    function saveDraft() {
+      try {
+        const existing = currentLog.entries.find(e => e.id === currentEntryId);
+        const entry = collectEntryFromUI(existing);
+        upsertEntry(currentLog, entry);
+        currentEntryId = entry.id;
+        saveLog(currentLog);
+        renderEntrySelector(currentLog, currentEntryId);
+        alert('Entry saved to this device.');
+      } catch (err) {
+        console.error(err);
+        alert('Unable to save entry (storage error).');
+      }
+    }
+
+    function exportLog() {
+      try {
+        const log = loadLog();
+        const payload = JSON.stringify(log, null, 2);
+        const blob = new Blob([payload], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const stamp = new Date().toISOString().slice(0, 10);
+        link.href = url;
+        link.download = `food-journal-log-${stamp}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error(err);
+        alert('Unable to export data.');
+      }
+    }
+
+    function loadDraft() {
+      currentLog = loadLog();
+      if (!currentLog.entries.length) {
+        const entry = ensureEntryForDate(currentLog, todayIso());
+        currentEntryId = entry.id;
+        renderEntrySelector(currentLog, currentEntryId);
+        renderEntry(entry);
+        renumberMeals();
+        alert('No saved entries were found; a new entry for today was created.');
+        return;
+      }
+      const target = currentLog.entries.find(e => e.id === currentEntryId) || currentLog.entries[0];
+      currentEntryId = target.id;
+      renderEntrySelector(currentLog, currentEntryId);
+      renderEntry(target);
+      renumberMeals();
+    }
+
+    function deleteDraft() {
+      const currentEntry = currentLog.entries.find(e => e.id === currentEntryId);
+      if (!currentEntry) {
+        alert('No entry selected to delete.');
+        return;
+      }
+      const filtered = currentLog.entries.filter(entry => entry.id !== currentEntryId);
+      currentLog.entries = filtered;
+      if (currentLog.entries.length === 0) {
+        const fresh = createEmptyEntry(todayIso());
+        currentLog.entries.push(fresh);
+        currentEntryId = fresh.id;
+      } else {
+        const sorted = [...currentLog.entries].sort((a, b) => (a.isoDate < b.isoDate ? 1 : -1));
+        currentEntryId = sorted[0].id;
+      }
+      saveLog(currentLog);
+      const nextEntry = currentLog.entries.find(e => e.id === currentEntryId) || currentLog.entries[0];
+      renderEntrySelector(currentLog, currentEntryId);
+      renderEntry(nextEntry);
+      alert('Current entry deleted from this device.');
+    }
+
+    let currentLog = loadLog();
+    let currentEntryId = null;
+
+    document.addEventListener('click', event => {
+      const target = event.target;
+      if (target.classList.contains('add-component-btn')) {
+        const mealCard = target.closest('.meal-card');
+        if (mealCard && mealCard.dataset.mealFinished === '1') return;
+        const container = mealCard ? mealCard.querySelector('.components-container') : null;
+        if (container) {
+          const comp = createComponent({});
+          container.appendChild(comp);
+          updateSymptomSectionVisibility(mealCard);
+          updateIngredientsVisibility(mealCard);
+        }
+      }
+
+      if (target.classList.contains('finish-baseline-btn')) {
+        setBaselineLocked(true);
+      }
+
+      if (target.classList.contains('show-portion-btn')) {
+        const mealCard = target.closest('.meal-card');
+        const portionRow = mealCard ? mealCard.querySelector('.portion-size-row') : null;
+        if (portionRow) portionRow.classList.remove('hidden');
+        target.classList.add('hidden');
+      }
+
+      if (target.classList.contains('remove-component-btn')) {
+        const comp = target.closest('.component-card');
+        if (comp) comp.remove();
+      }
+
+      if (target.classList.contains('add-ingredient-btn')) {
+        const comp = target.closest('.component-card');
+        const container = comp ? comp.querySelector('.ingredients-container') : null;
+        if (container) {
+          addIngredient(container);
+          const mealCard = target.closest('.meal-card');
+          updateSymptomSectionVisibility(mealCard);
+        }
+      }
+
+      if (target.classList.contains('toggle-component-btn')) {
+        const comp = target.closest('.component-card');
+        if (comp) {
+          promoteIngredientToComponent(comp);
+          setComponentMode(comp, true);
+          updateAddToComponentButton(comp);
+          updateComponentTitle(comp);
+        }
+      }
+
+      if (target.classList.contains('toggle-details-btn')) {
+        const row = target.closest('.ingredient-row');
+        if (row) {
+          const nowOpen = !row.classList.contains('details-open');
+          setIngredientDetailsVisibility(row, nowOpen);
+        }
+      }
+
+      if (target.classList.contains('finish-component-btn')) {
+        const comp = target.closest('.component-card');
+        if (comp) {
+          setComponentFinished(comp, true);
+        }
+      }
+
+      if (target.classList.contains('remove-ingredient-btn')) {
+        const row = target.closest('.ingredient-row');
+        if (row) {
+          const compCard = row.closest('.component-card');
+          row.remove();
+          updateComponentToggleButton(compCard);
+          updateComponentTitle(compCard);
+          const mealCard = compCard ? compCard.closest('.meal-card') : null;
+          updateSymptomSectionVisibility(mealCard);
+        }
+      }
+
+      if (target.classList.contains('add-timeline-row-btn')) {
+        const card = target.closest('.meal-card');
+        const body = card ? card.querySelector('.timeline-body') : null;
+        if (body) addTimelineRow(body, {});
+      }
+
+      if (target.classList.contains('remove-timeline-row-btn')) {
+        const tr = target.closest('tr');
+        if (tr) {
+          const card = tr.closest('.meal-card');
+          tr.remove();
+          updateTimelineVisibility(card);
+        }
+      }
+
+      if (target.classList.contains('finish-meal-btn')) {
+        const card = target.closest('.meal-card');
+        if (card) {
+          setMealFinishedState(card, true);
+          const logBtn = card.querySelector('.log-symptoms-btn');
+          if (logBtn) logBtn.classList.remove('hidden');
+        }
+      }
+
+      if (target.classList.contains('log-symptoms-btn')) {
+        const card = target.closest('.meal-card');
+        if (card) {
+          setSymptomsUnlocked(card, true);
+        }
+      }
+
+      if (target.classList.contains('remove-meal-btn')) {
+        const meal = target.closest('.meal-card');
+        if (meal) meal.remove();
+        renumberMeals();
+      }
+
+      if (target.closest('.meal-note-option')) {
+        const mealCard = target.closest('.meal-card');
+        updateIngredientsVisibility(mealCard);
+      }
+      const mealPrepLabel = target.closest('label');
+      if (mealPrepLabel) {
+        const prepInput = mealPrepLabel.querySelector('.meal-note-option');
+        if (prepInput) {
+          const mealCard = mealPrepLabel.closest('.meal-card');
+          setTimeout(() => updateIngredientsVisibility(mealCard), 0);
+        }
+      }
+    });
+
+    document.addEventListener('input', event => {
+      if (event.target.classList.contains('range-input')) {
+        setRangeValue(event.target, Number(event.target.value) || 0);
+        const card = event.target.closest('.meal-card');
+        if (card) updateTimelineVisibility(card);
+      }
+      if (event.target.classList.contains('timeline-time')) {
+        const row = event.target.closest('tr');
+        updateTimelineOnsetForRow(row);
+      }
+      if (event.target.classList.contains('component-name-input') || event.target.classList.contains('ingredient-name')) {
+        const card = event.target.closest('.component-card');
+        updateComponentTitle(card);
+        updateComponentToggleButton(card);
+        updateAddToComponentButton(card);
+        if (event.target.classList.contains('ingredient-name')) {
+          const row = event.target.closest('.ingredient-row');
+          updateIngredientRowActions(row);
+        }
+        const mealCard = event.target.closest('.meal-card');
+        updateSymptomSectionVisibility(mealCard);
+        updateIngredientsVisibility(mealCard);
+      }
+      if (event.target.classList.contains('meal-name-input')) {
+        const mealCard = event.target.closest('.meal-card');
+        updateIngredientsVisibility(mealCard);
+        updateAddIngredientButtonLabel(mealCard);
+        updateFinishMealButtonLabel(mealCard);
+        updateLogSymptomsButtonLabel(mealCard);
+      }
+      if (event.target.classList.contains('meal-note-option')) {
+        const mealCard = event.target.closest('.meal-card');
+        updateIngredientsVisibility(mealCard);
+      }
+    });
+
+    document.addEventListener('change', event => {
+      if (event.target.classList.contains('meal-type-select')) {
+        renumberMeals();
+      }
+      if (event.target.classList.contains('meal-time-input')) {
+        const card = event.target.closest('.meal-card');
+        updateAllTimelineOnsets(card);
+        sortMealsByTime();
+      }
+      if (event.target.classList.contains('meal-note-option')) {
+        const card = event.target.closest('.meal-card');
+        updateIngredientsVisibility(card);
+      }
+      if (event.target.id === 'entry-select') {
+        const selectedId = event.target.value;
+        const found = currentLog.entries.find(e => e.id === selectedId);
+        if (found) {
+          currentEntryId = found.id;
+          renderEntry(found);
+          renumberMeals();
+        }
+      }
+    });
+
+    document.getElementById('add-meal-btn').addEventListener('click', () => addMeal());
+    document.getElementById('new-entry-btn').addEventListener('click', () => {
+      const iso = todayIso();
+      let entry = currentLog.entries.find(e => e.isoDate === iso);
+      if (!entry) {
+        entry = createEmptyEntry(iso);
+        currentLog.entries.push(entry);
+        saveLog(currentLog);
+      }
+      currentEntryId = entry.id;
+      renderEntrySelector(currentLog, currentEntryId);
+      renderEntry(entry);
+      renumberMeals();
+    });
+
+    function initApp() {
+      const dateDisplay = document.getElementById('date-display');
+      const datePicker = document.getElementById('date-picker');
+      if (dateDisplay && datePicker) {
+        dateDisplay.addEventListener('click', () => {
+          if (typeof datePicker.showPicker === 'function') {
+            datePicker.showPicker();
+          } else {
+            datePicker.focus();
+            datePicker.click();
+          }
+        });
+        dateDisplay.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            if (typeof datePicker.showPicker === 'function') {
+              datePicker.showPicker();
+            } else {
+              datePicker.focus();
+              datePicker.click();
+            }
+          }
+        });
+        datePicker.addEventListener('change', () => {
+          if (!datePicker.value) return;
+          updateDateDisplay(datePicker.value);
+          const existing = currentLog.entries.find(entry => entry.isoDate === datePicker.value);
+          if (existing) {
+            currentEntryId = existing.id;
+            renderEntrySelector(currentLog, currentEntryId);
+            renderEntry(existing);
+          } else {
+            const fresh = createEmptyEntry(datePicker.value);
+            currentLog.entries.push(fresh);
+            saveLog(currentLog);
+            currentEntryId = fresh.id;
+            renderEntrySelector(currentLog, currentEntryId);
+            renderEntry(fresh);
+          }
+          renumberMeals();
+        });
+      }
+      let activeEntry = ensureEntryForDate(currentLog, todayIso());
+      currentEntryId = activeEntry.id;
+      renderEntrySelector(currentLog, currentEntryId);
+      renderEntry(activeEntry);
+      renumberMeals();
+      refreshRangeDisplays();
+    }
+
+    function setSymptomsUnlocked(card, unlocked) {
+      if (!card) return;
+      card.dataset.symptomsUnlocked = unlocked ? '1' : '0';
+      const symptomTimeInput = card.querySelector('.symptom-time-input');
+      if (unlocked && symptomTimeInput && !symptomTimeInput.value) {
+        symptomTimeInput.value = currentTimeHHMM();
+      }
+      updateSymptomSectionVisibility(card);
+      updateTimelineVisibility(card);
+    }
+
+    // Run init when the DOM is ready, even if this script runs after DOMContentLoaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+</html>
