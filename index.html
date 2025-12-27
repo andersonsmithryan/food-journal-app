@@ -477,6 +477,8 @@
           <button id="new-entry-btn" type="button" class="btn btn-primary">New entry for today</button>
           <button id="connect-data-file-btn" type="button" class="btn btn-ghost">Connect data file</button>
           <button id="create-data-file-btn" type="button" class="btn btn-primary hidden">Create companion file</button>
+          <button id="import-data-file-btn" type="button" class="btn btn-ghost hidden">Import companion file</button>
+          <input id="import-data-file-input" class="hidden" type="file" accept="application/json" />
         </div>
         <div class="data-file-bar">
           <div id="data-file-status" class="data-file-status">No companion data file found.</div>
@@ -1143,7 +1145,8 @@
     }
 
     function supportsFileAccess() {
-      return typeof window !== 'undefined' && typeof window.showOpenFilePicker === 'function';
+      if (typeof window === 'undefined') return false;
+      return typeof window.showOpenFilePicker === 'function' || typeof window.showSaveFilePicker === 'function' || typeof window.chooseFileSystemEntries === 'function';
     }
 
     async function verifyHandlePermission(handle, mode = 'readwrite') {
@@ -2268,6 +2271,31 @@
       btn.classList.toggle('hidden', !show);
     }
 
+    function setImportDataFileVisible(show) {
+      const btn = document.getElementById('import-data-file-btn');
+      if (!btn) return;
+      btn.classList.toggle('hidden', !show);
+    }
+
+    function setCreateButtonLabel(label) {
+      const btn = document.getElementById('create-data-file-btn');
+      if (!btn) return;
+      btn.textContent = label;
+    }
+
+    function downloadCompanionTemplate(log = null) {
+      const payloadLog = log && Array.isArray(log.entries) && log.entries.length ? log : { version: 1, entries: [createEmptyEntry(todayIso())] };
+      const blob = new Blob([JSON.stringify(payloadLog, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = EXPECTED_DATA_FILE_NAME;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
     async function applyDataFileHandle(handle, statusLabel = 'Connected to') {
       if (!handle) return false;
       const permitted = await verifyHandlePermission(handle, 'readwrite');
@@ -2288,6 +2316,7 @@
       updateDataFileStatus(`${statusLabel} ${handle.name}`);
       setCreateDataFileVisible(false);
       setConnectDataFileVisible(false);
+      setImportDataFileVisible(false);
       return true;
     }
 
@@ -2331,7 +2360,7 @@
 
     async function connectDataFile() {
       if (!supportsFileAccess()) {
-        alert('Your browser does not support choosing a companion data file. Please use the import/export buttons instead.');
+        alert('Your browser does not support choosing a companion data file. Use the import/download controls below.');
         return;
       }
       try {
@@ -2363,7 +2392,9 @@
 
     async function createAndConnectDataFile() {
       if (!supportsFileAccess()) {
-        alert('Your browser does not support creating a companion data file.');
+        downloadCompanionTemplate(currentLog);
+        updateDataFileStatus(`Downloaded ${EXPECTED_DATA_FILE_NAME}. Place it with index.html (or your cloud folder) and import it to continue.`);
+        setImportDataFileVisible(true);
         return;
       }
       try {
@@ -2384,6 +2415,31 @@
         console.error('Unable to create companion file', err);
         updateDataFileStatus('Unable to create companion data file.');
         setCreateDataFileVisible(true);
+      }
+    }
+
+    async function importCompanionFile(file) {
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        const log = normalizeLogObject(parsed);
+        if (!log.entries.length) {
+          log.entries.push(createEmptyEntry(todayIso()));
+        }
+        currentLog = log;
+        saveLog(currentLog);
+        const todays = currentLog.entries.find(e => e.isoDate === todayIso());
+        currentEntryId = todays ? todays.id : currentLog.entries[0].id;
+        renderEntrySelector(currentLog, currentEntryId);
+        renderEntry(currentLog.entries.find(e => e.id === currentEntryId));
+        updateNewEntryButtonVisibility();
+        const expectedNote = file.name === EXPECTED_DATA_FILE_NAME ? '' : ` (expected ${EXPECTED_DATA_FILE_NAME})`;
+        updateDataFileStatus(`Loaded ${file.name}${expectedNote}. Use "Download companion file" to save updates.`);
+        setCreateDataFileVisible(true);
+      } catch (err) {
+        console.error('Manual import failed', err);
+        alert('Unable to import companion file. Please ensure it is valid JSON.');
       }
     }
 
@@ -2593,6 +2649,15 @@
   document.getElementById('add-meal-btn').addEventListener('click', () => addMeal());
   document.getElementById('connect-data-file-btn').addEventListener('click', () => connectDataFile());
   document.getElementById('create-data-file-btn').addEventListener('click', () => createAndConnectDataFile());
+  document.getElementById('import-data-file-btn').addEventListener('click', () => {
+    const input = document.getElementById('import-data-file-input');
+    if (input) input.click();
+  });
+  document.getElementById('import-data-file-input').addEventListener('change', async (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (file) await importCompanionFile(file);
+    event.target.value = '';
+  });
   document.getElementById('new-entry-btn').addEventListener('click', () => {
     const iso = todayIso();
     let entry = currentLog.entries.find(e => e.isoDate === iso);
@@ -2652,16 +2717,20 @@
           updateNewEntryButtonVisibility();
         });
       }
-      const connectBtn = document.getElementById('connect-data-file-btn');
-      if (!supportsFileAccess()) {
-        updateDataFileStatus('Companion data files need a compatible browser. Use export/import if unavailable.');
+      const hasNativeFileAccess = supportsFileAccess();
+      if (!hasNativeFileAccess) {
+        updateDataFileStatus(`No companion data file found. In Safari, use Import to open ${EXPECTED_DATA_FILE_NAME} or Download to create one.`);
         setConnectDataFileVisible(false);
+        setImportDataFileVisible(true);
+        setCreateDataFileVisible(true);
+        setCreateButtonLabel('Download companion file');
+      } else {
+        setCreateButtonLabel('Create companion file');
+        setImportDataFileVisible(false);
         setCreateDataFileVisible(false);
-        return;
+        setConnectDataFileVisible(true);
+        await tryAutoConnectSavedFile();
       }
-      setCreateDataFileVisible(false);
-      setConnectDataFileVisible(true);
-      await tryAutoConnectSavedFile();
       let activeEntry = ensureEntryForDate(currentLog, todayIso());
       currentEntryId = activeEntry.id;
       renderEntrySelector(currentLog, currentEntryId);
