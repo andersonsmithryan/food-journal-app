@@ -1056,18 +1056,38 @@
       return `${base}-${Date.now()}`;
     }
 
+    function normalizeEntry(entry) {
+      const isoDate = entry.isoDate || displayToIso(entry.displayDate) || todayIso();
+      return {
+        id: entry.id || isoDate,
+        isoDate,
+        displayDate: entry.displayDate || formatDisplayDate(isoDate),
+        notesForToday: entry.notesForToday || '',
+        preMealState: entry.preMealState || defaultPreMealState(),
+        preMealTime: entry.preMealTime || currentTimeHHMM(),
+        preMealApprox: !!entry.preMealApprox,
+        preMealLocked: !!entry.preMealLocked,
+        preMealHeartRateIncrease: !!entry.preMealHeartRateIncrease,
+        preMealHeartRateBpm: entry.preMealHeartRateBpm || '',
+        meals: Array.isArray(entry.meals) ? entry.meals : [],
+        createdAt: entry.createdAt || new Date().toISOString(),
+        updatedAt: entry.updatedAt || new Date().toISOString()
+      };
+    }
+
     function normalizeLogObject(parsed) {
-      if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.entries)) {
+      if (!parsed || typeof parsed !== 'object') {
         return { version: 1, entries: [] };
       }
+      const rawEntries = Array.isArray(parsed.entries)
+        ? parsed.entries
+        : Array.isArray(parsed)
+          ? parsed
+          : [];
+      const entries = rawEntries.map(normalizeEntry);
       return {
         version: parsed.version || 1,
-        entries: parsed.entries.map(entry => ({
-          ...entry,
-          displayDate: entry.displayDate || formatDisplayDate(entry.isoDate),
-          preMealHeartRateIncrease: !!entry.preMealHeartRateIncrease,
-          preMealHeartRateBpm: entry.preMealHeartRateBpm || ''
-        }))
+        entries
       };
     }
 
@@ -2439,6 +2459,7 @@
         setCreateDataFileVisible(true);
       } catch (err) {
         console.error('Manual import failed', err);
+        updateDataFileStatus('Unable to import companion file. Please ensure it is valid JSON.');
         alert('Unable to import companion file. Please ensure it is valid JSON.');
       }
     }
