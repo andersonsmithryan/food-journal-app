@@ -183,6 +183,13 @@
       box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
     }
 
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: #fff;
@@ -644,15 +651,16 @@
       <h3>Meals</h3>
       <div class="actions-bar">
         <button id="add-meal-btn" type="button" class="btn btn-primary">+ Add Meal</button>
-        <button type="button" class="btn btn-primary" onclick="saveDraft()">Save draft</button>
-        <button type="button" class="btn btn-ghost" onclick="loadDraft()">Load draft</button>
+        <button type="button" id="save-draft-btn" class="btn btn-primary" onclick="saveDraft()">Save draft</button>
         <button type="button" class="btn btn-ghost" onclick="deleteDraft()">Delete draft</button>
         <button type="button" class="btn btn-ghost" onclick="exportLog()">Export data</button>
-        <button type="button" class="btn btn-primary" onclick="window.print()">Save as PDF</button>
       </div>
     </div>
 
     <div id="meals-container"></div>
+    <div id="secondary-add-meal" class="actions-bar hidden" style="justify-content: flex-start;">
+      <button type="button" class="btn btn-primary" id="add-meal-btn-secondary">+ Add Meal</button>
+    </div>
   </div>
 
   <!-- Templates for dynamic pieces -->
@@ -662,7 +670,10 @@
         <h4 class="component-title">Ingredient</h4>
         <button type="button" class="btn btn-danger btn-small remove-component-btn">Remove</button>
       </div>
-      <button type="button" class="btn btn-ghost btn-small toggle-component-btn">+ Promote to Component</button>
+      <div class="inline-row" style="margin: 0; gap: 0.5rem; align-items: center;">
+        <button type="button" class="btn btn-ghost btn-small toggle-component-btn">+ Promote to Recipe</button>
+        <button type="button" class="btn btn-ghost btn-small demote-component-btn hidden">Demote to Ingredient</button>
+      </div>
       <div class="component-name-row hidden">
         <div class="grid-two">
           <label>
@@ -673,29 +684,30 @@
             Quantity (Optional)
             <div class="quantity-row">
               <input type="text" placeholder="e.g. 200" class="component-quantity-value" />
-              <select class="component-quantity-unit">
-                <option value=""></option>
-                <option>g</option>
-                <option>ml</option>
-                <option>cup</option>
-                <option>tbsp</option>
-                <option>tsp</option>
-                <option>pcs</option>
-              </select>
-            </div>
-          </label>
-          <label>
-            Allergens (optional)
-            <select class="component-allergens" multiple>
-              <option>Gluten</option>
-              <option>Dairy</option>
-              <option>Additives</option>
-              <option>Refined Sugars</option>
-              <option>None</option>
+            <select class="component-quantity-unit">
+              <option value=""></option>
+              <option>g</option>
+              <option>ml</option>
+              <option>cup</option>
+              <option>tbsp</option>
+              <option>tsp</option>
+              <option>pcs</option>
             </select>
-          </label>
-        </div>
+          </div>
+        </label>
+        <label>
+          Allergens (optional)
+          <select class="component-allergens" multiple>
+            <option>Gluten</option>
+            <option>Dairy</option>
+            <option>Additives</option>
+            <option>Refined Sugars</option>
+            <option>Caffeine</option>
+            <option>None</option>
+          </select>
+        </label>
       </div>
+    </div>
       <div class="ingredients-container"></div>
       <button type="button" class="btn btn-ghost btn-small add-ingredient-btn hidden">+ Add to Component</button>
     </div>
@@ -721,10 +733,11 @@
         <option>Dairy</option>
         <option>Additives</option>
         <option>Refined Sugars</option>
+        <option>Caffeine</option>
         <option>None</option>
       </select>
       <button type="button" class="btn btn-danger btn-small remove-ingredient-btn">✕</button>
-      <button type="button" class="btn btn-ghost btn-small toggle-details-btn">+ Add Sub-Ingredients</button>
+      <button type="button" class="btn btn-ghost btn-small toggle-details-btn">+ Add packaged ingredients</button>
       <div class="ingredient-details">
         <input type="text" placeholder="Brand / Source" class="ingredient-brand" />
         <div class="subingredients">
@@ -1478,6 +1491,19 @@
       btn.textContent = `+ Log Symptoms for ${name}`;
     }
 
+    function updatePortionVisibility(card) {
+      if (!card) return;
+      const typeSelect = card.querySelector('.meal-type-select');
+      const portionToggleBtn = card.querySelector('.show-portion-btn');
+      const portionRow = card.querySelector('.portion-size-row');
+      if (!typeSelect || !portionToggleBtn || !portionRow) return;
+      const isBeverage = typeSelect.value === 'Beverage';
+      if (isBeverage) {
+        portionRow.classList.add('hidden');
+      }
+      portionToggleBtn.classList.toggle('hidden', isBeverage || !portionRow.classList.contains('hidden'));
+    }
+
     function shouldShowSymptomsSection(card) {
       if (!card) return false;
       const ingredientNames = card.querySelectorAll('.ingredient-name');
@@ -1527,7 +1553,7 @@
       ingredientFields.forEach(el => {
         if (el.classList.contains('remove-ingredient-btn') || el.classList.contains('remove-component-btn')) {
           el.disabled = !!locked;
-        } else if (el.classList.contains('toggle-component-btn') || el.classList.contains('toggle-details-btn') || el.classList.contains('add-component-btn') || el.classList.contains('add-ingredient-btn')) {
+        } else if (el.classList.contains('toggle-component-btn') || el.classList.contains('demote-component-btn') || el.classList.contains('toggle-details-btn') || el.classList.contains('add-component-btn') || el.classList.contains('add-ingredient-btn')) {
           el.classList.toggle('hidden', !!locked);
         } else {
           el.disabled = !!locked;
@@ -1541,15 +1567,26 @@
       const addBtn = card.querySelector('.add-component-btn');
       const finishBtn = card.querySelector('.finish-meal-btn');
       const logBtn = card.querySelector('.log-symptoms-btn');
+      const typeSelect = card.querySelector('.meal-type-select');
+      const mealNameInput = card.querySelector('.meal-name-input');
+      const prepOptions = card.querySelectorAll('.meal-note-option');
+      const removeIngredientBtns = card.querySelectorAll('.remove-ingredient-btn');
+      const reheatedDaysInput = card.querySelector('.reheated-days-input');
       if (addBtn) addBtn.classList.toggle('hidden', !!finished);
       if (finishBtn) finishBtn.classList.toggle('hidden', !!finished);
       if (logBtn) logBtn.classList.toggle('hidden', !finished);
+      if (typeSelect) typeSelect.disabled = !!finished;
+      if (mealNameInput) mealNameInput.disabled = !!finished;
+      prepOptions.forEach(cb => { cb.disabled = !!finished; });
+      removeIngredientBtns.forEach(btn => btn.classList.toggle('hidden', !!finished));
+      if (reheatedDaysInput) reheatedDaysInput.disabled = !!finished;
       if (finished) {
         setMealLockedState(card, true);
       }
       updateAddIngredientButtonLabel(card);
       updateFinishMealButtonLabel(card);
       updateLogSymptomsButtonLabel(card);
+      updateSecondaryAddMealVisibility();
     }
 
     function refreshRangeDisplays() {
@@ -1565,6 +1602,7 @@
       if (card) card.classList.toggle('premeal-locked', isLocked);
       if (btn) {
         btn.textContent = isLocked ? '✓ Baseline Saved' : '✓ Finish Baseline';
+        btn.disabled = isLocked;
       }
       document.querySelectorAll('.premeal-range').forEach(range => {
         range.disabled = isLocked;
@@ -1573,18 +1611,36 @@
       const hrBpm = document.getElementById('baseline-heart-rate-bpm');
       if (hrCheck) hrCheck.disabled = isLocked;
       if (hrBpm) hrBpm.disabled = isLocked;
+      const baselineTime = document.getElementById('baseline-time');
+      const baselineApprox = document.getElementById('baseline-approx');
+      if (baselineTime) baselineTime.disabled = isLocked;
+      if (baselineApprox) baselineApprox.disabled = isLocked;
+      const fields = document.querySelectorAll('.premeal-card .symptom-field');
+      fields.forEach(field => {
+        const range = field.querySelector('.range-input');
+        if (!range) return;
+        if (isLocked && Number(range.value) === 0) {
+          field.classList.add('hidden');
+        } else {
+          field.classList.remove('hidden');
+        }
+      });
+      updateBaselineDependentControls();
     }
 
     function setComponentMode(card, enabled) {
       const nameRow = card.querySelector('.component-name-row');
       const addBtn = card.querySelector('.add-ingredient-btn');
       const toggleBtn = card.querySelector('.toggle-component-btn');
+      const demoteBtn = card.querySelector('.demote-component-btn');
       if (nameRow) nameRow.classList.toggle('hidden', !enabled);
       if (toggleBtn) toggleBtn.classList.toggle('hidden', enabled);
+      if (demoteBtn) demoteBtn.classList.toggle('hidden', !enabled);
       card.dataset.componentMode = enabled ? '1' : '0';
       updateComponentTitle(card);
       updateAddToComponentButton(card);
       updateComponentToggleButton(card);
+      updateDemoteButtonLabel(card);
     }
 
     function promoteIngredientToComponent(card) {
@@ -1612,6 +1668,7 @@
       updateComponentTitle(card);
       updateAddToComponentButton(card);
       updateComponentToggleButton(card);
+      updateDemoteButtonLabel(card);
     }
 
     function updateComponentTitle(card) {
@@ -1637,6 +1694,7 @@
         label = componentMode ? 'Component' : 'Ingredient';
       }
       title.textContent = label;
+      updateDemoteButtonLabel(card);
     }
 
     function getFirstIngredientName(card) {
@@ -1651,18 +1709,18 @@
       if (!card) return;
       const toggleBtn = card.querySelector('.toggle-component-btn');
       if (!toggleBtn) return;
-      if (card.dataset.componentMode === '1') {
-        toggleBtn.classList.add('hidden');
-        return;
-      }
       const ingName = getFirstIngredientName(card);
-      const show = !!ingName;
+      const show = card.dataset.componentMode !== '1' && !!ingName;
       toggleBtn.classList.toggle('hidden', !show);
-      if (show) {
-        toggleBtn.textContent = `+ Promote ${ingName} to Component`;
-      } else {
-        toggleBtn.textContent = '+ Promote to Component';
-      }
+      toggleBtn.textContent = '+ Promote to Recipe';
+    }
+
+    function updateDemoteButtonLabel(card) {
+      if (!card) return;
+      const demoteBtn = card.querySelector('.demote-component-btn');
+      if (!demoteBtn) return;
+      const ingName = card.querySelector('.component-title')?.textContent?.trim() || 'Ingredient';
+      demoteBtn.textContent = `Demote ${ingName} to Ingredient`;
     }
 
     function updateAddToComponentButton(card) {
@@ -1670,8 +1728,9 @@
       const addBtn = card.querySelector('.add-ingredient-btn');
       const nameInput = card.querySelector('.component-name-input');
       const hasName = !!(nameInput && nameInput.value && nameInput.value.trim());
+      const finished = card.dataset.finished === '1';
       if (addBtn) {
-        addBtn.classList.toggle('hidden', !hasName || card.dataset.componentMode !== '1');
+        addBtn.classList.toggle('hidden', finished || !hasName || card.dataset.componentMode !== '1');
         if (hasName) {
           addBtn.textContent = `+ Add Ingredient to ${nameInput.value.trim()}`;
         } else {
@@ -1688,15 +1747,43 @@
       const show = !!nameVal;
       if (toggleDetails) {
         toggleDetails.classList.toggle('hidden', !show);
-        if (row.classList.contains('details-open')) {
-          toggleDetails.textContent = 'Hide Sub-Ingredients';
-        } else {
-          toggleDetails.textContent = show ? `+ Add Ingredients to ${nameVal}` : '+ Add Sub-Ingredients';
-        }
+        toggleDetails.textContent = row.classList.contains('details-open') ? 'Hide packaged ingredients' : '+ Add packaged ingredients';
       }
       const card = row.closest('.component-card');
       updateComponentToggleButton(card);
       updateComponentTitle(card);
+      applySeasoningDefaults(row);
+      autoSelectAllergensFromRow(row);
+    }
+
+    function applySeasoningDefaults(row) {
+      const nameInput = row ? row.querySelector('.ingredient-name') : null;
+      const qtyValueInput = row ? row.querySelector('.ingredient-quantity-value') : null;
+      const qtyUnitSelect = row ? row.querySelector('.ingredient-quantity-unit') : null;
+      const name = (nameInput && nameInput.value ? nameInput.value : '').toLowerCase();
+      if (!name || (!name.includes('salt') && !name.includes('peppercorns'))) return;
+      if (qtyValueInput && !qtyValueInput.value) qtyValueInput.value = '0.25';
+      if (qtyUnitSelect && !qtyUnitSelect.value) qtyUnitSelect.value = 'g';
+    }
+
+    function ensureAllergenSelected(selectEl, value) {
+      if (!selectEl) return;
+      Array.from(selectEl.options).forEach(opt => {
+        if (opt.value === value) opt.selected = true;
+      });
+    }
+
+    function autoSelectAllergensFromRow(row) {
+      if (!row) return;
+      const select = row.querySelector('.ingredient-allergens');
+      const textarea = row.querySelector('.subingredients textarea');
+      const text = (textarea && textarea.value ? textarea.value : '').toLowerCase();
+      if (text.includes('sugar')) {
+        ensureAllergenSelected(select, 'Refined Sugars');
+      }
+      if (text.includes('flavours')) {
+        ensureAllergenSelected(select, 'Additives');
+      }
     }
 
     function setIngredientDetailsVisibility(row, open) {
@@ -1748,6 +1835,8 @@
       updateIngredientRowActions(row);
       updateAddToComponentButton(container.closest('.component-card'));
       updateComponentTitle(container.closest('.component-card'));
+      applySeasoningDefaults(row);
+      autoSelectAllergensFromRow(row);
       return row;
     }
 
@@ -1877,6 +1966,7 @@
       updateIngredientsVisibility(card);
       updateSymptomSectionVisibility(card);
       updateTimelineVisibility(card);
+      updatePortionVisibility(card);
 
       return card;
     }
@@ -1934,6 +2024,7 @@
         if (Array.from(select.options).some(o => o.value === current)) {
           select.value = current;
         }
+        updatePortionVisibility(card);
       });
     }
 
@@ -2104,6 +2195,8 @@
       sortMealsByTime();
       updateMealTypeOptions();
       updateNewEntryButtonVisibility();
+      updateSecondaryAddMealVisibility();
+      updateBaselineDependentControls();
     }
 
     function renderEntrySelector(log, currentId) {
@@ -2154,6 +2247,31 @@
       }
     }
 
+    function isBaselineLocked() {
+      const card = document.querySelector('.premeal-card');
+      return !!(card && card.classList.contains('premeal-locked'));
+    }
+
+    function updateBaselineDependentControls() {
+      const locked = isBaselineLocked();
+      const addButtons = [document.getElementById('add-meal-btn'), document.getElementById('add-meal-btn-secondary')];
+      addButtons.forEach(btn => {
+        if (btn) btn.disabled = !locked;
+      });
+      const saveBtn = document.getElementById('save-draft-btn');
+      if (saveBtn) saveBtn.disabled = !locked;
+      updateSecondaryAddMealVisibility();
+    }
+
+    function updateSecondaryAddMealVisibility() {
+      const container = document.getElementById('secondary-add-meal');
+      const btn = document.getElementById('add-meal-btn-secondary');
+      if (!container || !btn) return;
+      const hasFinished = document.querySelector('.meal-card[data-meal-finished="1"]');
+      container.classList.toggle('hidden', !hasFinished);
+      btn.disabled = !isBaselineLocked();
+    }
+
     function updateNewEntryButtonVisibility() {
       const btn = document.getElementById('new-entry-btn');
       if (!btn) return;
@@ -2162,10 +2280,21 @@
       const hasTodayDraft = currentLog.entries.some(e => e.isoDate === today);
       const hide = (currentEntry && currentEntry.isoDate === today) || hasTodayDraft;
       btn.classList.toggle('hidden', hide);
+      btn.disabled = !companionAvailable;
+      if (!companionAvailable) {
+        btn.title = 'Connect or import a companion file to start a new entry';
+      } else {
+        btn.removeAttribute('title');
+      }
     }
 
     async function saveDraft() {
       try {
+        const saveBtn = document.getElementById('save-draft-btn');
+        if (saveBtn && saveBtn.disabled) {
+          alert('Finish baseline before saving.');
+          return;
+        }
         const existing = currentLog.entries.find(e => e.id === currentEntryId);
         const entry = collectEntryFromUI(existing);
         upsertEntry(currentLog, entry);
@@ -2199,40 +2328,6 @@
         console.error(err);
         alert('Unable to export data.');
       }
-    }
-
-    async function loadDraft() {
-      if (dataFileHandle) {
-        try {
-          const permitted = await verifyHandlePermission(dataFileHandle, 'readwrite');
-          if (permitted) {
-            currentLog = await safeReadLogFromHandle(dataFileHandle);
-          } else {
-            updateDataFileStatus('Permission to read the companion file was denied; using device storage.');
-            currentLog = loadLog();
-          }
-        } catch (err) {
-          console.error('Unable to read companion file, falling back to device storage.', err);
-          currentLog = loadLog();
-        }
-      } else {
-        currentLog = loadLog();
-      }
-      if (!currentLog.entries.length) {
-        const entry = ensureEntryForDate(currentLog, todayIso());
-        currentEntryId = entry.id;
-        renderEntrySelector(currentLog, currentEntryId);
-        renderEntry(entry);
-        renumberMeals();
-        alert('No saved entries were found; a new entry for today was created.');
-        return;
-      }
-      const target = currentLog.entries.find(e => e.id === currentEntryId) || currentLog.entries[0];
-      currentEntryId = target.id;
-      renderEntrySelector(currentLog, currentEntryId);
-      renderEntry(target);
-      renumberMeals();
-      saveLog(currentLog);
     }
 
     async function deleteDraft() {
@@ -2297,6 +2392,16 @@
       btn.classList.toggle('hidden', !show);
     }
 
+    function setCompanionAvailable(flag) {
+      companionAvailable = !!flag;
+      updateNewEntryButtonVisibility();
+      if (companionAvailable) {
+        setCreateDataFileVisible(false);
+        setConnectDataFileVisible(false);
+        setImportDataFileVisible(false);
+      }
+    }
+
     function setCreateButtonLabel(label) {
       const btn = document.getElementById('create-data-file-btn');
       if (!btn) return;
@@ -2337,6 +2442,7 @@
       setCreateDataFileVisible(false);
       setConnectDataFileVisible(false);
       setImportDataFileVisible(false);
+      setCompanionAvailable(true);
       return true;
     }
 
@@ -2347,6 +2453,7 @@
         if (!savedHandle) {
           updateDataFileStatus('No companion data file found.');
           setCreateDataFileVisible(true);
+          setCompanionAvailable(false);
           return;
         }
         await applyDataFileHandle(savedHandle, 'Connected to');
@@ -2355,6 +2462,7 @@
         await clearSavedDataFileHandle();
         updateDataFileStatus('No companion data file found.');
         setCreateDataFileVisible(true);
+        setCompanionAvailable(false);
       }
     }
 
@@ -2415,6 +2523,7 @@
         downloadCompanionTemplate(currentLog);
         updateDataFileStatus(`Downloaded ${EXPECTED_DATA_FILE_NAME}. Place it with index.html (or your cloud folder) and import it to continue.`);
         setImportDataFileVisible(true);
+        setCompanionAvailable(false);
         return;
       }
       try {
@@ -2455,18 +2564,23 @@
         renderEntry(currentLog.entries.find(e => e.id === currentEntryId));
         updateNewEntryButtonVisibility();
         const expectedNote = file.name === EXPECTED_DATA_FILE_NAME ? '' : ` (expected ${EXPECTED_DATA_FILE_NAME})`;
-        updateDataFileStatus(`Loaded ${file.name}${expectedNote}. Use "Download companion file" to save updates.`);
-        setCreateDataFileVisible(true);
+        updateDataFileStatus(`Loaded ${file.name}${expectedNote}. Updates will stay in this browser unless you reconnect the companion file.`);
+        setCreateDataFileVisible(false);
+        setImportDataFileVisible(false);
+        setConnectDataFileVisible(false);
+        setCompanionAvailable(true);
       } catch (err) {
         console.error('Manual import failed', err);
         updateDataFileStatus('Unable to import companion file. Please ensure it is valid JSON.');
         alert('Unable to import companion file. Please ensure it is valid JSON.');
+        setCompanionAvailable(false);
       }
     }
 
     let currentLog = loadLog();
     let currentEntryId = null;
     let dataFileHandle = null;
+    let companionAvailable = false;
 
     document.addEventListener('click', event => {
       const target = event.target;
@@ -2513,6 +2627,16 @@
         if (comp) {
           promoteIngredientToComponent(comp);
           setComponentMode(comp, true);
+          updateAddToComponentButton(comp);
+          updateComponentTitle(comp);
+        }
+      }
+
+      if (target.classList.contains('demote-component-btn')) {
+        const comp = target.closest('.component-card');
+        if (comp) {
+          setComponentMode(comp, false);
+          updateComponentToggleButton(comp);
           updateAddToComponentButton(comp);
           updateComponentTitle(comp);
         }
@@ -2574,6 +2698,7 @@
         if (meal) meal.remove();
         renumberMeals();
         updateMealTypeOptions();
+        updateSecondaryAddMealVisibility();
       }
 
       if (target.closest('.meal-note-option')) {
@@ -2638,12 +2763,18 @@
         const bpm = document.getElementById('baseline-heart-rate-bpm');
         toggleHeartRateFields(event.target, bpm);
       }
+      if (event.target.closest('.subingredients') && event.target.tagName === 'TEXTAREA') {
+        const row = event.target.closest('.ingredient-row');
+        autoSelectAllergensFromRow(row);
+      }
     });
 
     document.addEventListener('change', event => {
       if (event.target.classList.contains('meal-type-select')) {
         updateMealTypeOptions();
         renumberMeals();
+        const card = event.target.closest('.meal-card');
+        updatePortionVisibility(card);
       }
       if (event.target.classList.contains('meal-time-input')) {
         const card = event.target.closest('.meal-card');
@@ -2667,7 +2798,14 @@
       }
     });
 
-  document.getElementById('add-meal-btn').addEventListener('click', () => addMeal());
+  document.getElementById('add-meal-btn').addEventListener('click', () => {
+    if (!isBaselineLocked()) return;
+    addMeal();
+  });
+  document.getElementById('add-meal-btn-secondary').addEventListener('click', () => {
+    if (!isBaselineLocked()) return;
+    addMeal();
+  });
   document.getElementById('connect-data-file-btn').addEventListener('click', () => connectDataFile());
   document.getElementById('create-data-file-btn').addEventListener('click', () => createAndConnectDataFile());
   document.getElementById('import-data-file-btn').addEventListener('click', () => {
@@ -2680,6 +2818,8 @@
     event.target.value = '';
   });
   document.getElementById('new-entry-btn').addEventListener('click', () => {
+    const btn = document.getElementById('new-entry-btn');
+    if (btn && btn.disabled) return;
     const iso = todayIso();
     let entry = currentLog.entries.find(e => e.isoDate === iso);
     if (!entry) {
