@@ -460,6 +460,11 @@
       pointer-events: none;
     }
 
+    .meal-locked .log-symptoms-btn {
+      pointer-events: auto;
+      opacity: 1;
+    }
+
     @media (max-width: 600px) {
       .ingredient-row {
         grid-template-columns: 1fr;
@@ -1551,6 +1556,11 @@
       card.classList.toggle('meal-locked', !!locked);
       const ingredientFields = card.querySelectorAll('.ingredients-section input, .ingredients-section textarea, .ingredients-section select, .ingredients-section button');
       ingredientFields.forEach(el => {
+        if (el.classList.contains('log-symptoms-btn')) {
+          el.disabled = false;
+          el.classList.remove('hidden');
+          return;
+        }
         if (el.classList.contains('remove-ingredient-btn') || el.classList.contains('remove-component-btn')) {
           el.disabled = !!locked;
         } else if (el.classList.contains('toggle-component-btn') || el.classList.contains('demote-component-btn') || el.classList.contains('toggle-details-btn') || el.classList.contains('add-component-btn') || el.classList.contains('add-ingredient-btn')) {
