@@ -1,0 +1,19 @@
+[
+  { "label": "Tiredness / Fatigue", "key": "fatigue", "scope": "symptoms" },
+  { "label": "Diffused Redness", "key": "diffusedRedness", "scope": "symptoms" },
+  { "label": "Facial Flushing", "key": "facialFlushing", "scope": "symptoms" },
+  { "label": "Facial Bloating", "key": "facialBloating", "scope": "symptoms" },
+  { "label": "Abdominal Bloating", "key": "abdominalBloating", "scope": "digestion" },
+  { "label": "Flatulence", "key": "flatulence", "scope": "digestion" },
+  { "label": "Constipation", "key": "constipation", "scope": "digestion" },
+  { "label": "Diarrhoea", "key": "diarrhoea", "scope": "digestion" },
+  { "label": "Hand Tremors", "key": "handTremors", "scope": "symptoms" },
+  { "label": "Dizziness", "key": "dizziness", "scope": "symptoms" },
+  { "label": "Sinus Pressure", "key": "sinusPressure", "scope": "symptoms" },
+  { "label": "Headache", "key": "headache", "scope": "symptoms" },
+  { "label": "Palpitations", "key": "palpitations", "scope": "symptoms" },
+  { "label": "Itchiness", "key": "itchiness", "scope": "symptoms" },
+  { "label": "Jaw Pain", "key": "jawPain", "scope": "symptoms" },
+  { "label": "Digestive discomfort", "key": "digestiveDiscomfort", "scope": "digestion" },
+  { "label": "Steatorrhoea", "key": "steatorrhoea", "scope": "digestion" }
+]

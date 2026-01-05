@@ -460,11 +460,6 @@
       pointer-events: none;
     }
 
-    .meal-locked .log-symptoms-btn {
-      pointer-events: auto;
-      opacity: 1;
-    }
-
     @media (max-width: 600px) {
       .ingredient-row {
         grid-template-columns: 1fr;
@@ -530,113 +525,7 @@
           </div>
         </label>
       </div>
-      <div class="symptom-grid">
-        <div class="symptom-field">
-          <label>Tiredness / Fatigue</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="fatigue" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Diffused Redness</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="diffusedRedness" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Facial Flushing</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="facialFlushing" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Facial Bloating</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="facialBloating" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Abdominal Bloating</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="abdominalBloating" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Flatulence</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="flatulence" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Constipation</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="constipation" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Diarrhoea</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="diarrhoea" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Hand Tremors</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="handTremors" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Dizziness</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="dizziness" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Sinus Pressure</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="sinusPressure" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Headache</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="headache" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Palpitations</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="palpitations" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Itchiness</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="itchiness" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-        <div class="symptom-field">
-          <label>Jaw Pain</label>
-          <div class="range-row">
-            <input type="range" min="0" max="10" value="0" class="range-input premeal-range" data-key="jawPain" />
-            <span class="range-value">0</span>
-          </div>
-        </div>
-      </div>
+      <div id="baseline-symptom-grid" class="symptom-grid"></div>
       <div class="heart-rate-row">
         <label class="checkbox-inline" style="margin: 0;">
           <input type="checkbox" id="baseline-heart-rate-check" />
@@ -839,7 +728,6 @@
         <div class="components-container"></div>
         <button type="button" class="btn btn-ghost btn-small add-component-btn">+ Add Ingredient</button>
         <button type="button" class="btn btn-ghost btn-small finish-meal-btn">✓ Finish Logging</button>
-        <button type="button" class="btn btn-ghost btn-small log-symptoms-btn hidden">+ Log Symptoms for Meal</button>
       </div>
 
       <div class="symptom-section hidden">
@@ -856,112 +744,32 @@
             </label>
           </div>
         </div>
-        <div class="symptom-grid">
-          <div class="symptom-field">
-            <label>Tiredness / Fatigue</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="fatigue" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Diffused Redness</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="diffusedRedness" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Facial Flushing</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="facialFlushing" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Facial Bloating</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="facialBloating" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Abdominal Bloating</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="abdominalBloating" data-scope="digestion" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Flatulence</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="flatulence" data-scope="digestion" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Constipation</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="constipation" data-scope="digestion" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Diarrhoea</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="diarrhoea" data-scope="digestion" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Hand Tremors</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="handTremors" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Dizziness</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="dizziness" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Sinus Pressure</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="sinusPressure" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Headache</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="headache" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Palpitations</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="palpitations" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Itchiness</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="itchiness" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
-          <div class="symptom-field">
-            <label>Jaw Pain</label>
-            <div class="range-row">
-              <input type="range" min="0" max="10" value="0" class="range-input symptom-range" data-group="jawPain" data-scope="symptoms" />
-              <span class="range-value">0</span>
-            </div>
-          </div>
+        <div class="inline-row symptom-change-row hidden" style="margin: 0 0 0.75rem; gap: 0.75rem; align-items: center;">
+          <label style="margin: 0;">Did your symptoms get worse?
+            <select class="symptom-change-select">
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </label>
+        </div>
+        <div class="symptom-grid symptom-grid-dynamic"></div>
+        <div class="grid-two macros-grid hidden" style="margin-top: 0.75rem;">
+          <label>
+            Fat (g)
+            <input type="number" min="0" step="0.1" class="macro-input macro-fat" placeholder="e.g. 15" />
+          </label>
+          <label>
+            Protein (g)
+            <input type="number" min="0" step="0.1" class="macro-input macro-protein" placeholder="e.g. 25" />
+          </label>
+          <label>
+            Carbohydrates (g)
+            <input type="number" min="0" step="0.1" class="macro-input macro-carbs" placeholder="e.g. 40" />
+          </label>
+          <label>
+            Fibre (g)
+            <input type="number" min="0" step="0.1" class="macro-input macro-fibre" placeholder="e.g. 8" />
+          </label>
         </div>
         <div class="heart-rate-row">
           <label class="checkbox-inline" style="margin: 0;">
@@ -1004,7 +812,7 @@
     const HANDLE_STORE_KEY = 'companionFile';
     const MEAL_TYPES = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Beverage'];
 
-    const symptomConfig = [
+    const DEFAULT_SYMPTOM_CONFIG = [
       { label: 'Tiredness / Fatigue', key: 'fatigue', scope: 'symptoms' },
       { label: 'Diffused Redness', key: 'diffusedRedness', scope: 'symptoms' },
       { label: 'Facial Flushing', key: 'facialFlushing', scope: 'symptoms' },
@@ -1019,8 +827,23 @@
       { label: 'Headache', key: 'headache', scope: 'symptoms' },
       { label: 'Palpitations', key: 'palpitations', scope: 'symptoms' },
       { label: 'Itchiness', key: 'itchiness', scope: 'symptoms' },
-      { label: 'Jaw Pain', key: 'jawPain', scope: 'symptoms' }
+      { label: 'Jaw Pain', key: 'jawPain', scope: 'symptoms' },
+      { label: 'Digestive discomfort', key: 'digestiveDiscomfort', scope: 'digestion' },
+      { label: 'Steatorrhoea', key: 'steatorrhoea', scope: 'digestion' }
     ];
+
+    let symptomConfig = [...DEFAULT_SYMPTOM_CONFIG];
+    let timelineSymptomOptions = [];
+    let preMealKeys = [];
+
+    function applySymptomConfig(config = DEFAULT_SYMPTOM_CONFIG) {
+      const usable = Array.isArray(config) && config.length ? config : DEFAULT_SYMPTOM_CONFIG;
+      symptomConfig = usable.map(option => ({ ...option }));
+      preMealKeys = symptomConfig.map(cfg => cfg.key);
+      timelineSymptomOptions = [...symptomConfig.map(cfg => cfg.label), 'Heart Rate Increase'];
+    }
+
+    applySymptomConfig(DEFAULT_SYMPTOM_CONFIG);
 
     const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const monthLookup = monthNames.reduce((acc, m, idx) => {
@@ -1081,7 +904,7 @@
         isoDate,
         displayDate: entry.displayDate || formatDisplayDate(isoDate),
         notesForToday: entry.notesForToday || '',
-        preMealState: entry.preMealState || defaultPreMealState(),
+        preMealState: { ...defaultPreMealState(), ...(entry.preMealState || {}) },
         preMealTime: entry.preMealTime || currentTimeHHMM(),
         preMealApprox: !!entry.preMealApprox,
         preMealLocked: !!entry.preMealLocked,
@@ -1262,13 +1085,33 @@
       }
     }
 
-    const preMealKeys = symptomConfig.map(cfg => cfg.key);
-
     function defaultPreMealState() {
       return preMealKeys.reduce((acc, key) => {
         acc[key] = 0;
         return acc;
       }, {});
+    }
+
+    function defaultSymptomState(scope = 'symptoms') {
+      return symptomConfig
+        .filter(cfg => (cfg.scope || 'symptoms') === scope)
+        .reduce((acc, cfg) => {
+          acc[cfg.key] = 0;
+          return acc;
+        }, {});
+    }
+
+    async function loadSymptomConfig() {
+      try {
+        const response = await fetch('symptoms.json', { cache: 'no-cache' });
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        const data = await response.json();
+        const options = Array.isArray(data) ? data : Array.isArray(data?.options) ? data.options : DEFAULT_SYMPTOM_CONFIG;
+        applySymptomConfig(options);
+      } catch (err) {
+        console.warn('Falling back to default symptom list.', err);
+        applySymptomConfig(DEFAULT_SYMPTOM_CONFIG);
+      }
     }
 
     function createEmptyEntry(isoDate) {
@@ -1288,8 +1131,6 @@
         updatedAt: new Date().toISOString()
       };
     }
-
-    const timelineSymptomOptions = [...symptomConfig.map(cfg => cfg.label), 'Heart Rate Increase'];
 
     const quantityUnits = ['g', 'ml', 'cup', 'tbsp', 'tsp', 'pcs'];
     const legacyUnits = ['pc'];
@@ -1352,6 +1193,58 @@
       const parent = rangeEl.parentElement;
       const display = parent ? parent.querySelector('.range-value') : null;
       if (display) display.textContent = String(num);
+    }
+
+    function buildSymptomField(cfg, mode = 'meal') {
+      const field = document.createElement('div');
+      field.className = 'symptom-field';
+      const label = document.createElement('label');
+      label.textContent = cfg.label;
+      const row = document.createElement('div');
+      row.className = 'range-row';
+      const input = document.createElement('input');
+      input.type = 'range';
+      input.min = '0';
+      input.max = '10';
+      input.value = '0';
+      input.classList.add('range-input');
+      if (mode === 'baseline') {
+        input.classList.add('premeal-range');
+        input.dataset.key = cfg.key;
+      } else {
+        input.classList.add('symptom-range');
+        input.dataset.group = cfg.key;
+        input.dataset.scope = cfg.scope || 'symptoms';
+      }
+      const valueDisplay = document.createElement('span');
+      valueDisplay.className = 'range-value';
+      valueDisplay.textContent = '0';
+      row.appendChild(input);
+      row.appendChild(valueDisplay);
+      field.appendChild(label);
+      field.appendChild(row);
+      return field;
+    }
+
+    function renderBaselineSymptomGrid() {
+      const grid = document.getElementById('baseline-symptom-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      symptomConfig.forEach(cfg => {
+        const field = buildSymptomField(cfg, 'baseline');
+        grid.appendChild(field);
+      });
+    }
+
+    function renderMealSymptomGrid(card) {
+      if (!card) return;
+      const grid = card.querySelector('.symptom-grid-dynamic');
+      if (!grid) return;
+      grid.innerHTML = '';
+      symptomConfig.forEach(cfg => {
+        const field = buildSymptomField(cfg, 'meal');
+        grid.appendChild(field);
+      });
     }
 
     function collectPreMealState() {
@@ -1487,15 +1380,6 @@
       btn.textContent = `✓ Finish Logging ${name}`;
     }
 
-    function updateLogSymptomsButtonLabel(card) {
-      if (!card) return;
-      const btn = card.querySelector('.log-symptoms-btn');
-      if (!btn) return;
-      const mealNameInput = card.querySelector('.meal-name-input');
-      const name = mealNameInput && mealNameInput.value ? mealNameInput.value.trim() : 'Meal';
-      btn.textContent = `+ Log Symptoms for ${name}`;
-    }
-
     function updatePortionVisibility(card) {
       if (!card) return;
       const typeSelect = card.querySelector('.meal-type-select');
@@ -1546,9 +1430,89 @@
       if (!card) return;
       const section = card.querySelector('.symptom-section');
       if (!section) return;
-      const show = card.dataset.symptomsUnlocked === '1';
+      const show = card.dataset.symptomsUnlocked === '1' || card.dataset.mealFinished === '1';
       section.classList.toggle('hidden', !show);
       updateTimelineVisibility(card);
+    }
+
+    function toggleSymptomChangeRow(card, show) {
+      const row = card ? card.querySelector('.symptom-change-row') : null;
+      if (row) row.classList.toggle('hidden', !show);
+    }
+
+    function toggleMacroGrid(card, show) {
+      const grid = card ? card.querySelector('.macros-grid') : null;
+      if (grid) grid.classList.toggle('hidden', !show);
+    }
+
+    function applyBaselineSymptomsToMeal(card) {
+      if (!card) return;
+      const baseline = collectPreMealState();
+      card.querySelectorAll('.symptom-range').forEach(range => {
+        const key = range.dataset.group;
+        const value = baseline[key];
+        setRangeValue(range, Number.isFinite(value) ? value : 0);
+      });
+      refreshRangeDisplays();
+    }
+
+    function lockPostMealSymptoms(card, locked) {
+      if (!card) return;
+      const ranges = card.querySelectorAll('.symptom-range');
+      ranges.forEach(range => {
+        range.disabled = !!locked;
+      });
+      const timeInput = card.querySelector('.symptom-time-input');
+      if (timeInput) timeInput.disabled = !!locked;
+      const approx = card.querySelector('.symptom-approx-checkbox');
+      if (approx) approx.disabled = !!locked;
+      const timelineInputs = card.querySelectorAll('.timeline-section input, .timeline-section select, .timeline-section button');
+      timelineInputs.forEach(el => {
+        el.disabled = !!locked;
+      });
+      const hrCheck = card.querySelector('.symptom-heart-rate-check');
+      const hrBpm = card.querySelector('.symptom-heart-rate-bpm');
+      if (hrCheck) hrCheck.disabled = !!locked;
+      if (hrBpm) hrBpm.disabled = !!locked;
+    }
+
+    function applySymptomChangeSelection(card, selection, { applyBaseline = false } = {}) {
+      if (!card) return;
+      const normalized = selection === 'yes' ? 'yes' : 'no';
+      const select = card.querySelector('.symptom-change-select');
+      if (select) select.value = normalized;
+      if (applyBaseline) {
+        applyBaselineSymptomsToMeal(card);
+      }
+      lockPostMealSymptoms(card, normalized === 'no');
+    }
+
+    function collectMacros(card) {
+      const getVal = selector => {
+        const input = card ? card.querySelector(selector) : null;
+        return input ? input.value : '';
+      };
+      return {
+        fat: getVal('.macro-fat'),
+        protein: getVal('.macro-protein'),
+        carbs: getVal('.macro-carbs'),
+        fibre: getVal('.macro-fibre')
+      };
+    }
+
+    function setMacroFields(card, macros = {}) {
+      const setVal = (selector, value) => {
+        const input = card ? card.querySelector(selector) : null;
+        if (input) input.value = value || '';
+      };
+      setVal('.macro-fat', macros.fat);
+      setVal('.macro-protein', macros.protein);
+      setVal('.macro-carbs', macros.carbs);
+      setVal('.macro-fibre', macros.fibre);
+    }
+
+    function hasMacroValues(macros = {}) {
+      return ['fat', 'protein', 'carbs', 'fibre'].some(key => macros[key]);
     }
 
     function setMealLockedState(card, locked) {
@@ -1556,11 +1520,6 @@
       card.classList.toggle('meal-locked', !!locked);
       const ingredientFields = card.querySelectorAll('.ingredients-section input, .ingredients-section textarea, .ingredients-section select, .ingredients-section button');
       ingredientFields.forEach(el => {
-        if (el.classList.contains('log-symptoms-btn')) {
-          el.disabled = false;
-          el.classList.remove('hidden');
-          return;
-        }
         if (el.classList.contains('remove-ingredient-btn') || el.classList.contains('remove-component-btn')) {
           el.disabled = !!locked;
         } else if (el.classList.contains('toggle-component-btn') || el.classList.contains('demote-component-btn') || el.classList.contains('toggle-details-btn') || el.classList.contains('add-component-btn') || el.classList.contains('add-ingredient-btn')) {
@@ -1576,7 +1535,6 @@
       card.dataset.mealFinished = finished ? '1' : '0';
       const addBtn = card.querySelector('.add-component-btn');
       const finishBtn = card.querySelector('.finish-meal-btn');
-      const logBtn = card.querySelector('.log-symptoms-btn');
       const typeSelect = card.querySelector('.meal-type-select');
       const mealNameInput = card.querySelector('.meal-name-input');
       const prepOptions = card.querySelectorAll('.meal-note-option');
@@ -1584,7 +1542,6 @@
       const reheatedDaysInput = card.querySelector('.reheated-days-input');
       if (addBtn) addBtn.classList.toggle('hidden', !!finished);
       if (finishBtn) finishBtn.classList.toggle('hidden', !!finished);
-      if (logBtn) logBtn.classList.toggle('hidden', !finished);
       if (typeSelect) typeSelect.disabled = !!finished;
       if (mealNameInput) mealNameInput.disabled = !!finished;
       prepOptions.forEach(cb => { cb.disabled = !!finished; });
@@ -1592,10 +1549,16 @@
       if (reheatedDaysInput) reheatedDaysInput.disabled = !!finished;
       if (finished) {
         setMealLockedState(card, true);
+        setSymptomsUnlocked(card, true);
+        toggleSymptomChangeRow(card, true);
       }
+      if (!finished) {
+        toggleSymptomChangeRow(card, false);
+        toggleMacroGrid(card, hasMacroValues(collectMacros(card)));
+      }
+      toggleMacroGrid(card, finished || hasMacroValues(collectMacros(card)));
       updateAddIngredientButtonLabel(card);
       updateFinishMealButtonLabel(card);
-      updateLogSymptomsButtonLabel(card);
       updateSecondaryAddMealVisibility();
     }
 
@@ -1921,6 +1884,7 @@
       const mealTitle = card.querySelector('.meal-title');
       const reheatedCheckbox = card.querySelector('.meal-reheated-option');
       const reheatedDaysInput = card.querySelector('.reheated-days-input');
+      renderMealSymptomGrid(card);
 
       if (data.type && typeSelect) typeSelect.value = data.type;
       if (mealTitle && typeSelect) {
@@ -1958,6 +1922,12 @@
       const digestion = data.digestion || {};
       setSymptomSliderValues(card, symptoms, digestion);
 
+      const macros = data.macros || {};
+      setMacroFields(card, macros);
+      toggleMacroGrid(card, hasMacroValues(macros));
+
+      const symptomChangeSelection = data.symptomChange || '';
+
       const timeline = data.timeline && data.timeline.length ? data.timeline : [];
       if (timeline.length > 0) {
         timeline.forEach(entry => addTimelineRow(timelineBody, entry));
@@ -1965,12 +1935,18 @@
 
       const hasSymptomData = Object.values(symptoms || {}).some(v => Number(v) > 0) ||
         Object.values(digestion || {}).some(v => Number(v) > 0) ||
-        (timeline && timeline.length > 0) || (data.symptomTime && data.symptomTime.trim());
+        (timeline && timeline.length > 0) || (data.symptomTime && data.symptomTime.trim()) || !!symptomChangeSelection;
 
-      setMealFinishedState(card, hasSymptomData);
-      setSymptomsUnlocked(card, hasSymptomData);
+      const shouldShowSymptoms = hasSymptomData || data.finished;
+      const resolvedSymptomChange = symptomChangeSelection || (hasSymptomData ? 'yes' : 'no');
+
+      setMealFinishedState(card, shouldShowSymptoms);
+      setSymptomsUnlocked(card, shouldShowSymptoms);
+      if (shouldShowSymptoms) {
+        toggleSymptomChangeRow(card, true);
+        applySymptomChangeSelection(card, resolvedSymptomChange, { applyBaseline: false });
+      }
       updateFinishMealButtonLabel(card);
-      updateLogSymptomsButtonLabel(card);
 
       updateAddIngredientButtonLabel(card);
       updateIngredientsVisibility(card);
@@ -2039,6 +2015,8 @@
     }
 
     function collectMeal(card, index) {
+      const symptomDefaults = defaultSymptomState('symptoms');
+      const digestionDefaults = defaultSymptomState('digestion');
       const meal = {
         id: card.dataset.id || randomId(),
         index: index + 1,
@@ -2054,29 +2032,15 @@
         symptomApprox: !!(card.querySelector('.symptom-approx-checkbox') && card.querySelector('.symptom-approx-checkbox').checked),
         notes: '',
         components: [],
-        symptoms: {
-          fatigue: 0,
-          diffusedRedness: 0,
-          facialFlushing: 0,
-          facialBloating: 0,
-          handTremors: 0,
-          dizziness: 0,
-          sinusPressure: 0,
-          headache: 0,
-          palpitations: 0,
-          itchiness: 0,
-          jawPain: 0
-        },
-        digestion: {
-          abdominalBloating: 0,
-          flatulence: 0,
-          constipation: 0,
-          diarrhoea: 0
-        },
+        symptoms: { ...symptomDefaults },
+        digestion: { ...digestionDefaults },
         timeline: [],
         heartRateIncrease: !!(card.querySelector('.symptom-heart-rate-check') && card.querySelector('.symptom-heart-rate-check').checked),
         heartRateBpm: (card.querySelector('.symptom-heart-rate-bpm') || {}).value || '',
-        reheatedDays: (card.querySelector('.reheated-days-input') || {}).value || ''
+        reheatedDays: (card.querySelector('.reheated-days-input') || {}).value || '',
+        symptomChange: (card.querySelector('.symptom-change-select') || {}).value || '',
+        macros: collectMacros(card),
+        finished: card.dataset.mealFinished === '1'
       };
 
       const noteSelections = getSelectedMealNotes(card);
@@ -2177,6 +2141,7 @@
     }
 
     function renderEntry(entry) {
+      renderBaselineSymptomGrid();
       const dateDisplay = document.getElementById('date-display');
       const datePicker = document.getElementById('date-picker');
       if (datePicker) datePicker.value = entry.isoDate || '';
@@ -2691,15 +2656,10 @@
         const card = target.closest('.meal-card');
         if (card) {
           setMealFinishedState(card, true);
-          const logBtn = card.querySelector('.log-symptoms-btn');
-          if (logBtn) logBtn.classList.remove('hidden');
-        }
-      }
-
-      if (target.classList.contains('log-symptoms-btn')) {
-        const card = target.closest('.meal-card');
-        if (card) {
           setSymptomsUnlocked(card, true);
+          toggleSymptomChangeRow(card, true);
+          applySymptomChangeSelection(card, 'no', { applyBaseline: true });
+          updateSymptomSectionVisibility(card);
         }
       }
 
@@ -2757,7 +2717,6 @@
         updateIngredientsVisibility(mealCard);
         updateAddIngredientButtonLabel(mealCard);
         updateFinishMealButtonLabel(mealCard);
-        updateLogSymptomsButtonLabel(mealCard);
       }
       if (event.target.classList.contains('meal-note-option')) {
         const mealCard = event.target.closest('.meal-card');
@@ -2795,6 +2754,11 @@
         const card = event.target.closest('.meal-card');
         updateIngredientsVisibility(card);
         updateReheatedDaysVisibility(card);
+      }
+      if (event.target.classList.contains('symptom-change-select')) {
+        const card = event.target.closest('.meal-card');
+        applySymptomChangeSelection(card, event.target.value, { applyBaseline: true });
+        updateTimelineVisibility(card);
       }
       if (event.target.id === 'entry-select') {
         const selectedId = event.target.value;
@@ -2846,6 +2810,8 @@
     });
 
     async function initApp() {
+      await loadSymptomConfig();
+      renderBaselineSymptomGrid();
       const dateDisplay = document.getElementById('date-display');
       const datePicker = document.getElementById('date-picker');
       if (dateDisplay && datePicker) {
