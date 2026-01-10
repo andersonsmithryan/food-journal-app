@@ -486,7 +486,7 @@
       <h2>Track meals, ingredients, and how you feel afterward.</h2>
     </div>
 
-    <div class="card premeal-card">
+    <div class="card date-card">
       <label>
         Date
         <div class="date-inputs">
@@ -496,7 +496,7 @@
       </label>
     </div>
 
-    <div class="card">
+    <div class="card premeal-card">
       <div class="section-title">
         <h3>Pre-meal baseline</h3>
         <p class="muted-text" style="margin: 0;">Rate how you feel before eating (0 = none, 10 = worst).</p>
@@ -877,6 +877,20 @@
       return `${base}-${Date.now()}`;
     }
 
+    function normalizeMeal(meal = {}) {
+      const normalized = { ...meal };
+      const prepFallback = meal.preparation
+        || meal.mealPreparation
+        || meal.mealPrep
+        || meal.prep
+        || meal.prepType
+        || meal.preparationType;
+      if (!normalized.notes && prepFallback) {
+        normalized.notes = prepFallback;
+      }
+      return normalized;
+    }
+
     function normalizeEntry(entry) {
       const isoDate = entry.isoDate || displayToIso(entry.displayDate) || todayIso();
       return {
@@ -890,7 +904,7 @@
         preMealLocked: !!entry.preMealLocked,
         preMealHeartRateIncrease: !!entry.preMealHeartRateIncrease,
         preMealHeartRateBpm: entry.preMealHeartRateBpm || '',
-        meals: Array.isArray(entry.meals) ? entry.meals : [],
+        meals: Array.isArray(entry.meals) ? entry.meals.map(meal => normalizeMeal(meal)) : [],
         createdAt: entry.createdAt || new Date().toISOString(),
         updatedAt: entry.updatedAt || new Date().toISOString()
       };
@@ -2897,6 +2911,25 @@
   document.getElementById('connect-data-file-btn').addEventListener('click', () => connectDataFile());
   document.getElementById('create-data-file-btn').addEventListener('click', () => createAndConnectDataFile());
   document.getElementById('import-data-file-btn').addEventListener('click', () => {
+    if (supportsFileAccess()) {
+      promptForExistingDataFile()
+        .then(handle => {
+          if (!handle) return;
+          if (!isExpectedDataFileName(handle)) {
+            alert(`Please select the companion file named "${EXPECTED_DATA_FILE_NAME}".`);
+            updateDataFileStatus('No companion data file found.');
+            setCreateDataFileVisible(true);
+            return;
+          }
+          return applyDataFileHandle(handle, 'Connected to');
+        })
+        .catch(err => {
+          if (err?.name === 'AbortError') return;
+          console.error(err);
+          alert('Unable to open data file.');
+        });
+      return;
+    }
     const input = document.getElementById('import-data-file-input');
     if (input) input.click();
   });
@@ -2957,6 +2990,15 @@
             renderEntrySelector(currentLog, currentEntryId);
             renderEntry(existing);
           } else {
+            if (!companionAvailable) {
+              alert('Connect or import a companion file before starting a new entry.');
+              const active = currentLog.entries.find(entry => entry.id === currentEntryId) || currentLog.entries[0];
+              if (active) {
+                if (datePicker) datePicker.value = active.isoDate || todayIso();
+                updateDateDisplay(active.isoDate || todayIso());
+              }
+              return;
+            }
             const fresh = createEmptyEntry(datePicker.value);
             currentLog.entries.push(fresh);
             saveLog(currentLog);
