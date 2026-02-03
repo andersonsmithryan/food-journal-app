@@ -39,10 +39,10 @@ def next_id(prefix: str, existing: set) -> str:
     return f"{prefix}-{next_num:03d}"
 
 
-def sync_feature(feature_path: Path, prefix: str, id_map: dict) -> tuple[bool, list[str], list[str]]:
+def sync_feature(feature_path: Path, prefix: str, id_map: dict, all_ids: set) -> tuple[bool, list[str], list[str]]:
     lines = feature_path.read_text().splitlines()
     updated = []
-    existing_ids = {tag for tags in id_map.values() for tag in tags.values()}
+    existing_ids = set(all_ids)
     changed = False
     duplicates = []
     deprecated_titles = []
@@ -96,6 +96,11 @@ def main() -> None:
     changed = False
     duplicate_titles = []
     deprecated_titles = []
+    all_ids = {
+        tag
+        for feature in id_map.values()
+        for tag in feature.values()
+    }
 
     for feature_file, meta in config.items():
         prefix = meta.get("prefix")
@@ -105,7 +110,7 @@ def main() -> None:
         if not path.exists():
             continue
         id_map.setdefault(feature_file, {})
-        updated, duplicates, deprecated = sync_feature(path, prefix, id_map[feature_file])
+        updated, duplicates, deprecated = sync_feature(path, prefix, id_map[feature_file], all_ids)
         duplicate_titles.extend([f"{feature_file}: {title}" for title in duplicates])
         deprecated_titles.extend([f"{feature_file}: {title}" for title in deprecated])
         if updated:
