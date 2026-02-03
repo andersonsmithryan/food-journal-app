@@ -89,6 +89,8 @@
 - [ ] All DOM mutation sites replaced by state-driven UI
 - [ ] Persistence & file sync strategy mapped
 
+**Status notes:** Initial inventory coverage completed; checklist items remain in progress until each UI/state/persistence area is fully mapped to SwiftUI constructs and validated.
+
 ## 6) Failure Modes + Mitigation
 | Failure Mode | Impact | Mitigation |
 |-------------|--------|-----------|
