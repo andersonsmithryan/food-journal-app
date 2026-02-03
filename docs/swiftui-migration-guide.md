@@ -19,7 +19,7 @@ All inferred or uncertain items **must be explicitly marked**:
 - `@needs-confirmation` — ambiguous or conflicting requirements.
 - `@deprecated` — superseded or retired requirement.
 
-## 5) Gherkin Backfill Plan (Pending Execution)
+## 5) Gherkin Backfill Plan (Execution Rules)
 **Objective:** Backdate Gherkins to reflect the current app snapshot.
 **Method:**
 1) Inventory existing app behaviors.
@@ -27,6 +27,13 @@ All inferred or uncertain items **must be explicitly marked**:
 3) Mark inferred items as `@assumed`.
 4) Review with stakeholder to confirm/resolve.
 5) Promote confirmed items and adjust or deprecate as needed.
+
+**Classification rules:**
+- If a scenario’s intent is unclear or overlaps a newer scenario, tag it `@needs-confirmation`.
+- If a scenario is superseded, keep it but tag it `@deprecated`.
+- Prefer tags over deletion to preserve audit history.
+
+**Current status:** Initial backfill completed with `@assumed` tags for inferred scenarios.
 
 ## 6) SwiftUI Pattern Inventory Output Format
 The inventory document uses a consistent table:
@@ -62,5 +69,4 @@ The inventory document uses a consistent table:
 - Deprecated scenarios are **kept** but tagged.
 
 ## 10) Open Items (Pending)
-- Gherkin backfill execution.
 - Generator tool selection and ID map format.
