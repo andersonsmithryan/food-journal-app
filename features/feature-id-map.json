@@ -12,5 +12,21 @@
   "symptom-change.feature": {
     "Selecting \"no\" hides and clears post-meal symptom fields": "SYMP-001",
     "Selecting \"yes\" shows post-meal symptoms and copies baseline values": "SYMP-002"
+  },
+  "entry-selector.feature": {
+    "Selecting an existing entry loads its data": "ENTR-001",
+    "Changing the date creates or loads an entry": "ENTR-002"
+  },
+  "persistence.feature": {
+    "Saving an entry writes to local storage": "PERS-001",
+    "Saving an entry updates the companion file when connected": "PERS-002",
+    "Importing a companion file loads entries into the journal": "PERS-003"
+  },
+  "timeline.feature": {
+    "Adding a timeline row creates a symptom event": "TL-001",
+    "Updating meal time recalculates timeline onsets": "TL-002"
+  },
+  "macros.feature": {
+    "Macro fields are shown after finishing a meal": "MACR-001"
   }
 }

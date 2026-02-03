@@ -7,3 +7,11 @@ features:
     prefix: MEAL
   symptom-change.feature:
     prefix: SYMP
+  entry-selector.feature:
+    prefix: ENTR
+  persistence.feature:
+    prefix: PERS
+  timeline.feature:
+    prefix: TL
+  macros.feature:
+    prefix: MACR
