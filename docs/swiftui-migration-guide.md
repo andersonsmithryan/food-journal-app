@@ -69,4 +69,11 @@ The inventory document uses a consistent table:
 - Deprecated scenarios are **kept** but tagged.
 
 ## 10) Open Items (Pending)
-- Generator tool selection and ID map format.
+- Generator tool selection and ID map format. (Resolved below.)
+
+## 11) Gherkin Generator & ID Mapping (Adopted)
+- **Generator mode:** In-session updates to `.feature` files stored in repo.
+- **Config file:** `features/feature-config.yml`
+- **ID map:** `features/feature-id-map.json`
+- **ID format:** `<PREFIX>-###` (stable per feature file).
+- **Rule:** If a scenario has a matching ID in the map, reuse it; otherwise generate the next available ID for that feature.

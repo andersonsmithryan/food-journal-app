@@ -1,6 +1,7 @@
 Feature: Companion file connection
   Ensures entry creation is tied to a connected companion file.
 
+  @COMP-001
   Scenario: Disable new entry when no companion file is connected
     Given no companion file is connected
     When I view the entry selector
@@ -8,6 +9,7 @@ Feature: Companion file connection
     And the button indicates a companion file is required
 
   @deprecated
+  @COMP-002
   Scenario: Prevent new entry creation from the date picker when no companion file is connected
     Given no companion file is connected
     When I change the date to a day with no existing entry

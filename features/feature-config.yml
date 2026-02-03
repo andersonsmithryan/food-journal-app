@@ -1,0 +1,9 @@
+features:
+  companion-file.feature:
+    prefix: COMP
+  baseline.feature:
+    prefix: BASE
+  meal-logging.feature:
+    prefix: MEAL
+  symptom-change.feature:
+    prefix: SYMP
