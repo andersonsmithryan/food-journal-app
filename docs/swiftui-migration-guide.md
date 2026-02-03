@@ -1,0 +1,66 @@
+# SwiftUI Migration Guide (Plan & Operating Model)
+
+## 1) Purpose
+This guide defines **how we conduct the SwiftUI migration prep** (pattern inventory, risk analysis, and Gherkin backfill). It is the **single source of truth for process and methodology**.
+
+## 2) Scope & Source of Truth
+- **Authoritative state:** Current working tree in this repo.
+- **Deliverables:**
+  1) **Migration Guide** (this document)
+  2) **Migration Inventory** (`docs/swiftui-migration-inventory.md`)
+
+## 3) Document Structure (Two-Doc Model)
+- **Migration Guide (this doc):** Plan, stages, rules, and operating model.
+- **Migration Inventory:** The evolving, raw mapping of web patterns → SwiftUI equivalents.
+
+## 4) Status Tags
+All inferred or uncertain items **must be explicitly marked**:
+- `@assumed` — inferred intent, not yet confirmed.
+- `@needs-confirmation` — ambiguous or conflicting requirements.
+- `@deprecated` — superseded or retired requirement.
+
+## 5) Gherkin Backfill Plan (Pending Execution)
+**Objective:** Backdate Gherkins to reflect the current app snapshot.
+**Method:**
+1) Inventory existing app behaviors.
+2) Draft Gherkins for each behavior.
+3) Mark inferred items as `@assumed`.
+4) Review with stakeholder to confirm/resolve.
+5) Promote confirmed items and adjust or deprecate as needed.
+
+## 6) SwiftUI Pattern Inventory Output Format
+The inventory document uses a consistent table:
+
+| ID | Location | Web Pattern | Description | SwiftUI Equivalent | Refactor Strategy | Risk | Notes |
+|----|----------|-------------|-------------|--------------------|-------------------|------|------|
+
+## 7) Phased Refactor Plan
+1) **State Model Extraction**
+   - Enumerate all UI state.
+   - Define canonical data structures.
+
+2) **View Decomposition**
+   - Map DOM templates to SwiftUI views.
+
+3) **Event Migration**
+   - Replace delegated DOM events with view-local actions.
+
+4) **Persistence & Sync**
+   - Replace localStorage / file handle patterns with SwiftUI-appropriate data layer.
+
+## 8) Failure Modes + Mitigations
+| Failure Mode | Impact | Mitigation |
+|-------------|--------|-----------|
+| Hidden implicit DOM state | Silent bugs | Audit all DOM side-effects |
+| Dynamic element IDs not mapped | UI breakage | Use stable IDs in model |
+| Long imperative handlers | Unclear flow | Convert to state transitions |
+| Ambiguous/deprecated requirements | Drift | Use `@needs-confirmation` and `@deprecated` |
+
+## 9) Update Rules
+- **Guide updates are intentional and infrequent.**
+- **Inventory updates are frequent and ongoing.**
+- Deprecated scenarios are **kept** but tagged.
+
+## 10) Open Items (Pending)
+- Gherkin backfill execution.
+- Generator tool selection and ID map format.
