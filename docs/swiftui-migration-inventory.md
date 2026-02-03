@@ -9,16 +9,29 @@
 | ID | Location | Web Pattern | Description | SwiftUI Equivalent | Refactor Strategy | Risk | Notes |
 |----|----------|-------------|-------------|--------------------|-------------------|------|------|
 | DOM-01 | index.html → `setBaselineLocked`, `updateSymptomSectionVisibility` | DOM Queries | Uses `querySelector`/`querySelectorAll` to enable/disable and hide baseline & symptom fields. | `@State` + `disabled()` + conditional view modifiers | Introduce `BaselineState` and derived visibility bindings. | Med | Many conditional branches rely on DOM state. |
+| DOM-02 | index.html → `collectMeal`, `collectPreMealState` | DOM Queries | Reads form values directly from DOM for serialization. | `@State` + `Codable` models | Bind inputs directly to models rather than querying DOM. | Med | Serialization depends on current DOM. |
+| DOM-03 | index.html → `updateNewEntryButtonVisibility` | DOM Queries | Enables/disables buttons based on current log + companion connection. | Derived state + disabled modifier | Make availability a computed state in view model. | Low | Simple derived state. |
 | TMP-01 | index.html → `<template>` blocks (`meal`, `ingredient`, `timeline`) | Template Cloning | `cloneNode(true)` and manual wiring for repeated UI sections. | `ForEach` + reusable `View` structs | Define view models (`Meal`, `Ingredient`, `TimelineRow`) and render via `ForEach`. | Med | Large templates with imperative wiring. |
 | EVT-01 | index.html → `document.addEventListener('click'/'input'/'change')` | Event Delegation | Global listeners route by class name. | View-local handlers (`Button`, `.onChange`) | Move handlers into view components with explicit bindings. | Low | Straightforward mapping. |
 | SHW-01 | index.html → `classList.toggle('hidden')` | Imperative Show/Hide | Toggling DOM classes to show/hide sections. | Conditional views (`if`/`Group`) | Use state to derive visibility instead of DOM toggles. | Med | Visibility logic spread across helpers. |
+| STATE-01 | index.html → `dataset.*` flags on cards | DOM Data Attributes | Stores UI state (locked, finished, hidden) on DOM nodes. | `@State` / model flags | Move flags into model state and bind to view. | Med | Multiple flags across meal cards. |
+| STATE-02 | index.html → `applySymptomChangeSelection` | State Transitions | Mutates symptom fields, time fields, and hides sections. | Action method on view model | Centralize transition logic in model layer. | Med | Coupled with UI and baseline copy. |
+| STATE-03 | index.html → `applyIngredientType` | State Transitions | Changes component mode + ingredient detail visibility. | View model + conditional views | Use ingredient type enum and view logic. | Med | Multiple UI branches. |
+| CONF-01 | index.html → `loadSymptomConfig` | External Config | Fetches `symptoms.json` at runtime with fallback defaults. | Bundled config or remote fetch | Provide config via bundled JSON or service. | Low | Add error handling in data layer. |
+| CONF-02 | symptoms.json | Data Schema | Symptom options define labels, keys, input types, conditional fields. | SwiftUI model definitions | Convert JSON to `Codable` models. | Low | Stable schema. |
 | PERS-01 | index.html → `localStorage` + file handles | Persistence Coupling | Saves to localStorage and companion file handles. | `ObservableObject` + persistence service | Isolate persistence layer and inject into views. | Med | Mix of local + file sync rules. |
+| PERS-02 | index.html → `saveLogToFileIfConnected` | File Access | Writes to File System Access API with permissions. | File coordinator / document-based model | Define file I/O layer or document-based storage. | Med | Permissions and errors. |
+| PERS-03 | index.html → `importCompanionFile` | Import Flow | Loads JSON into current log without handle. | Import pipeline with validation | Normalize input and store source metadata. | Low | Straightforward parse + normalize. |
+| UI-01 | index.html → date picker + entry selector | UI State | Changes entry based on date or select dropdown. | `Picker` + binding to entry ID | Bind selection to entry ID and derived date. | Med | Multiple entry sources. |
+| UI-02 | index.html → timeline rows | Dynamic Lists | Adds/removes timeline symptom rows. | `ForEach` + add/remove actions | Use identifiable rows bound to state. | Med | Mixed ordering and time calculation. |
+| UI-03 | index.html → macros grid | Conditional Inputs | Shows macro fields based on meal completion. | Conditional view section | Model macro state and show when needed. | Low | Straightforward toggle. |
+| VALID-01 | index.html → `isMealReady` | Validation | Requires meal name + prep selection before finishing. | Validation on model | Compute readiness in view model. | Low | Simple rules. |
 
 ## 3) Pattern Categories
 ### DOM Queries
 - **Definition:** Direct DOM lookups for state or UI manipulation (`querySelector`, `querySelectorAll`).
-- **Instances:** Baseline locking, symptom toggles, meal cards, ingredient fields.
-- **SwiftUI mapping:** Replace with state-driven view updates.
+- **Instances:** Baseline locking, symptom toggles, entry selector, meal cards, ingredient fields.
+- **SwiftUI mapping:** Replace with state-driven view updates and bindings.
 - **Risks:** Hidden dependencies in DOM structure.
 
 ### Template Cloning
@@ -44,6 +57,18 @@
 - **Instances:** `saveLog`, `saveLogToFileIfConnected`, companion file connect/import.
 - **SwiftUI mapping:** Dedicated persistence service / data store.
 - **Risks:** Medium; multi-source persistence rules.
+
+### DOM Data Attributes
+- **Definition:** UI state stored in `dataset` flags on DOM nodes.
+- **Instances:** `dataset.mealFinished`, `dataset.symptomsUnlocked`, `dataset.symptomFieldsHidden`.
+- **SwiftUI mapping:** Model flags in state objects.
+- **Risks:** Medium; scattered state updates.
+
+### External Config & Schema
+- **Definition:** Runtime config fetched from JSON.
+- **Instances:** `symptoms.json` + default config fallback.
+- **SwiftUI mapping:** Bundled config + `Codable` schema.
+- **Risks:** Low; ensure schema stability.
 
 ## 4) Refactor Plan (Phased)
 ### Phase 1: State Model Extraction
