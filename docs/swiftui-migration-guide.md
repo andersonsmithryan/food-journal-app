@@ -91,3 +91,24 @@ The inventory document uses a consistent table:
 - `docs/swiftui-model-schema.md` (canonical model schema)
 - `docs/swiftui-persistence-decision.md` (persistence architecture decision)
 - `docs/swiftui-migration-scaffolding.md` (module layout and migration order)
+
+
+## 14) Migration Readiness Plan Status
+### Completed plan steps
+- State catalog and readiness checklist completed in `docs/swiftui-migration-inventory.md`.
+- Template clone mapping completed.
+- DOM mutation mapping completed.
+- Persistence and file-sync strategy mapping completed.
+- Pre-migration modeling artifacts completed:
+  - Model schema (`docs/swiftui-model-schema.md`)
+  - Persistence decision memo (`docs/swiftui-persistence-decision.md`)
+  - Scaffolding plan (`docs/swiftui-migration-scaffolding.md`)
+
+### Open actions from this plan
+- None. All currently defined readiness-plan actions are complete.
+
+## 15) Additional Recommended Pre-Start Steps (Not blockers, but high value)
+- Confirm all `@assumed` Gherkin scenarios before migration begins.
+- Add a SwiftUI parity verification checklist per feature phase (Entry selector, Baseline, Meals, Symptoms, Timeline, Macros).
+- Define migration "exit criteria" for each phase (data parity, behavior parity, save/load parity).
+- Decide first migration slice (recommended: Entry selector + baseline) and create a phase-1 implementation task list.
