@@ -118,11 +118,17 @@
 
 ## 6) Migration Readiness Checklist
 - [x] All state variables enumerated
-- [ ] All template clones mapped to views
+- [x] All template clones mapped to views
 - [ ] All DOM mutation sites replaced by state-driven UI
 - [ ] Persistence & file sync strategy mapped
 
-**Status notes:** State catalog verified against current entry/meal/component flows; ready to mark enumeration complete once confirmed.
+**Status notes:** State catalog and template clone mapping verified; DOM mutation and persistence strategy remain pending.
+
+## 6.1) Template Clone → SwiftUI View Mapping
+- `#meal-template` → `MealCardView` (meal shell, metadata, finish state).
+- `#component-template` → `ComponentCardView` (ingredient type + component metadata).
+- `#ingredient-template` → `IngredientRowView` (name, quantity, allergens, sub-ingredients).
+- `#timeline-row-template` → `TimelineRowView` (symptom timeline entry).
 
 ## 7) Failure Modes + Mitigation
 | Failure Mode | Impact | Mitigation |
