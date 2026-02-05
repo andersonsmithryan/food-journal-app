@@ -77,3 +77,11 @@ The inventory document uses a consistent table:
 - **ID map:** `features/feature-id-map.json`
 - **ID format:** `<PREFIX>-###` (stable per feature file).
 - **Rule:** If a scenario has a matching ID in the map, reuse it; otherwise generate the next available ID for that feature.
+
+## 12) Gherkin Automation & Hygiene (Adopted)
+- **Invocation:** `make gherkin-sync` runs `scripts/gherkin_id_sync.py`.
+- **When to run:** Always run before committing when Gherkin files change.
+- **Rationale:** Stable IDs prevent churn in scenario references, and a synchronized ID map keeps scenario identity consistent across edits.
+- **Hygiene rules enforced by the script:**
+  - Duplicate scenario titles fail the sync with a non-zero exit code.
+  - Deprecated scenarios are reported for review (kept for audit history).
