@@ -120,9 +120,9 @@
 - [x] All state variables enumerated
 - [x] All template clones mapped to views
 - [x] All DOM mutation sites replaced by state-driven UI
-- [ ] Persistence & file sync strategy mapped
+- [x] Persistence & file sync strategy mapped
 
-**Status notes:** DOM mutation sites mapped to state-driven equivalents; persistence strategy remains pending.
+**Status notes:** Persistence strategy mapped; all checklist items complete.
 
 ## 6.1) Template Clone → SwiftUI View Mapping
 - `#meal-template` → `MealCardView` (meal shell, metadata, finish state).
@@ -143,3 +143,10 @@
 | Hidden implicit DOM state | Silent bugs | Capture state in view models and derive UI from state. |
 | Event routing drift | Missed actions | Replace delegated events with explicit handlers per view. |
 | Mixed persistence logic | Data inconsistency | Centralize storage in a persistence service. |
+
+## 6.3) Persistence & File Sync Strategy Mapping
+- **Local draft storage:** `localStorage` (`loadLog` / `saveLog`) → `AppDataStore` with `@Published` state.
+- **Companion file handle storage:** `indexedDB` handle store → document coordinator + persisted bookmark (sandbox-safe).
+- **Companion file read/write:** `readLogFromFile` / `writeLogToFile` → `FileDocument` or file coordinator-based service.
+- **Manual import:** `importCompanionFile` → import pipeline with validation + normalization.
+- **Sync trigger points:** `saveDraft`, `applyDataFileHandle`, auto-connect flow → unified persistence service.
