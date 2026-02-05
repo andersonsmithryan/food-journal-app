@@ -28,5 +28,15 @@
   },
   "macros.feature": {
     "Macro fields are shown after finishing a meal": "MACR-001"
+  },
+  "ingredient-type.feature": {
+    "Single ingredient hides component and packaged detail inputs": "INGR-001",
+    "Prepared recipe enables component workflow": "INGR-002",
+    "Packaged food enables sub-ingredient details": "INGR-003"
+  },
+  "symptom-config.feature": {
+    "Symptom configuration is loaded from external file": "SCFG-001",
+    "Checkbox and slider symptom types render from config": "SCFG-002",
+    "Missing or invalid config falls back to defaults": "SCFG-003"
   }
 }

@@ -15,3 +15,7 @@ features:
     prefix: TL
   macros.feature:
     prefix: MACR
+  ingredient-type.feature:
+    prefix: INGR
+  symptom-config.feature:
+    prefix: SCFG

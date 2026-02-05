@@ -108,7 +108,7 @@ The inventory document uses a consistent table:
 - None. All currently defined readiness-plan actions are complete.
 
 ## 15) Additional Recommended Pre-Start Steps (Not blockers, but high value)
-- Confirm all `@assumed` Gherkin scenarios before migration begins.
+- Confirm all `@assumed` Gherkin scenarios before migration begins (second-pass inferred coverage has been added; review still required).
 - Add a SwiftUI parity verification checklist per feature phase (Entry selector, Baseline, Meals, Symptoms, Timeline, Macros).
 - Define migration "exit criteria" for each phase (data parity, behavior parity, save/load parity).
 - Decide first migration slice (recommended: Entry selector + baseline) and create a phase-1 implementation task list.
