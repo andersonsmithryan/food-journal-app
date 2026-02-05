@@ -82,7 +82,9 @@
 
 ### Entry State
 - `entry.isoDate`, `entry.displayDate`.
+- `entry.notesForToday`, `entry.createdAt`, `entry.updatedAt`.
 - `entry.preMealState`, `entry.preMealTime`, `entry.preMealApprox`, `entry.preMealLocked`.
+- `entry.preMealHeartRateIncrease`, `entry.preMealHeartRateBpm` (legacy compatibility fields).
 - `entry.meals[]` (list of meal objects).
 
 ### Meal State (per meal card)
@@ -93,11 +95,13 @@
 
 ### Component / Ingredient State
 - `component.name`, `component.quantity`, `component.allergens`, `component.ingredientType`.
-- `ingredient.name`, `ingredient.quantity`, `ingredient.brand`, `ingredient.allergens`, `ingredient.subingredients`.
+- `component.ingredients[]` (sub-ingredient list).
+- `ingredient.name`, `ingredient.quantity`, `ingredient.brandSource`, `ingredient.allergens`, `ingredient.subIngredients`.
 
 ### UI State (DOM-derived flags)
 - `dataset.mealFinished`, `dataset.symptomsUnlocked`, `dataset.symptomFieldsHidden`.
 - `dataset.componentMode`, `dataset.ingredientType`.
+- `dataset.finished` (component-level add button state).
 
 ## 5) Refactor Plan (Phased)
 ### Phase 1: State Model Extraction
@@ -113,12 +117,12 @@
 - Isolate persistence into a data layer and sync service.
 
 ## 6) Migration Readiness Checklist
-- [ ] All state variables enumerated
+- [x] All state variables enumerated
 - [ ] All template clones mapped to views
 - [ ] All DOM mutation sites replaced by state-driven UI
 - [ ] Persistence & file sync strategy mapped
 
-**Status notes:** State catalog added; enumeration requires verification across all flows before this item is marked complete.
+**Status notes:** State catalog verified against current entry/meal/component flows; ready to mark enumeration complete once confirmed.
 
 ## 7) Failure Modes + Mitigation
 | Failure Mode | Impact | Mitigation |
