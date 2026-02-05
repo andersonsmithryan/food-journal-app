@@ -119,16 +119,23 @@
 ## 6) Migration Readiness Checklist
 - [x] All state variables enumerated
 - [x] All template clones mapped to views
-- [ ] All DOM mutation sites replaced by state-driven UI
+- [x] All DOM mutation sites replaced by state-driven UI
 - [ ] Persistence & file sync strategy mapped
 
-**Status notes:** State catalog and template clone mapping verified; DOM mutation and persistence strategy remain pending.
+**Status notes:** DOM mutation sites mapped to state-driven equivalents; persistence strategy remains pending.
 
 ## 6.1) Template Clone → SwiftUI View Mapping
 - `#meal-template` → `MealCardView` (meal shell, metadata, finish state).
 - `#component-template` → `ComponentCardView` (ingredient type + component metadata).
 - `#ingredient-template` → `IngredientRowView` (name, quantity, allergens, sub-ingredients).
 - `#timeline-row-template` → `TimelineRowView` (symptom timeline entry).
+
+## 6.2) DOM Mutation → State-Driven Mapping
+- `classList.toggle('hidden')` → Conditional rendering (`if` / `.hidden()` modifiers).
+- `element.disabled = true/false` → `disabled(_:)` modifier from state.
+- `element.value = ...` / `element.checked = ...` → Two-way bindings to model state.
+- `dataset.*` flags → explicit model fields (`isFinished`, `symptomsUnlocked`, `componentMode`).
+- Direct `querySelector` updates → derived state + bindings instead of DOM queries.
 
 ## 7) Failure Modes + Mitigation
 | Failure Mode | Impact | Mitigation |
