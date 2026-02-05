@@ -70,7 +70,36 @@
 - **SwiftUI mapping:** Bundled config + `Codable` schema.
 - **Risks:** Low; ensure schema stability.
 
-## 4) Refactor Plan (Phased)
+## 4) State Catalog (Enumeration)
+### Global / App State
+- `currentLog` (loaded log data from local storage / companion file).
+- `currentEntryId` (selected entry identifier).
+- `dataFileHandle` (File System Access handle for companion file).
+- `companionAvailable` (bool indicating companion connection).
+- `symptomConfig` (current symptom configuration list).
+- `timelineSymptomOptions` (labels used in timeline selectors).
+- `preMealKeys` (ordered keys for baseline symptoms).
+
+### Entry State
+- `entry.isoDate`, `entry.displayDate`.
+- `entry.preMealState`, `entry.preMealTime`, `entry.preMealApprox`, `entry.preMealLocked`.
+- `entry.meals[]` (list of meal objects).
+
+### Meal State (per meal card)
+- `meal.type`, `meal.timeEaten`, `meal.timeApprox`, `meal.mealName`.
+- `meal.portionSize`, `meal.notes`, `meal.reheatedDays`, `meal.finished`.
+- `meal.symptomChange`, `meal.symptomTime`, `meal.symptomApprox`.
+- `meal.symptoms`, `meal.digestion`, `meal.macros`, `meal.timeline[]`.
+
+### Component / Ingredient State
+- `component.name`, `component.quantity`, `component.allergens`, `component.ingredientType`.
+- `ingredient.name`, `ingredient.quantity`, `ingredient.brand`, `ingredient.allergens`, `ingredient.subingredients`.
+
+### UI State (DOM-derived flags)
+- `dataset.mealFinished`, `dataset.symptomsUnlocked`, `dataset.symptomFieldsHidden`.
+- `dataset.componentMode`, `dataset.ingredientType`.
+
+## 5) Refactor Plan (Phased)
 ### Phase 1: State Model Extraction
 - Enumerate all UI state into view models (`Entry`, `Meal`, `Ingredient`, `SymptomState`).
 
@@ -83,15 +112,15 @@
 ### Phase 4: Persistence & Sync
 - Isolate persistence into a data layer and sync service.
 
-## 5) Migration Readiness Checklist
+## 6) Migration Readiness Checklist
 - [ ] All state variables enumerated
 - [ ] All template clones mapped to views
 - [ ] All DOM mutation sites replaced by state-driven UI
 - [ ] Persistence & file sync strategy mapped
 
-**Status notes:** Initial inventory coverage completed; checklist items remain in progress until each UI/state/persistence area is fully mapped to SwiftUI constructs and validated. No checklist items are complete yet.
+**Status notes:** State catalog added; enumeration requires verification across all flows before this item is marked complete.
 
-## 6) Failure Modes + Mitigation
+## 7) Failure Modes + Mitigation
 | Failure Mode | Impact | Mitigation |
 |-------------|--------|-----------|
 | Hidden implicit DOM state | Silent bugs | Capture state in view models and derive UI from state. |
