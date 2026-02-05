@@ -85,3 +85,9 @@ The inventory document uses a consistent table:
 - **Hygiene rules enforced by the script:**
   - Duplicate scenario titles fail the sync with a non-zero exit code.
   - Deprecated scenarios are reported for review (kept for audit history).
+
+
+## 13) Pre-Migration Modeling Artifacts
+- `docs/swiftui-model-schema.md` (canonical model schema)
+- `docs/swiftui-persistence-decision.md` (persistence architecture decision)
+- `docs/swiftui-migration-scaffolding.md` (module layout and migration order)
