@@ -16,7 +16,7 @@ Feature: Symptom configuration driven rendering
     Then checkbox symptoms render as checkboxes with conditional fields when configured
     And slider symptoms render as range controls
 
-  @assumed
+  @confirmed
   @SCFG-003
   Scenario: Missing or invalid config falls back to defaults
     Given symptoms.json cannot be loaded
