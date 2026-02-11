@@ -105,7 +105,7 @@ The inventory document uses a consistent table:
   - Scaffolding plan (`docs/swiftui-migration-scaffolding.md`)
 
 ### Open actions from this plan
-- None. All currently defined readiness-plan actions are complete.
+- Confirm all `@assumed` Gherkin scenarios and promote/retire as needed.
 
 ## 15) Additional Recommended Pre-Start Steps (Not blockers, but high value)
 - Confirm all `@assumed` Gherkin scenarios before migration begins (second-pass inferred coverage has been added; review still required).
