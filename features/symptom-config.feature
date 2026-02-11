@@ -1,7 +1,7 @@
 Feature: Symptom configuration driven rendering
   Render symptom controls from unified symptom configuration.
 
-  @assumed
+  @confirmed
   @SCFG-001
   Scenario: Symptom configuration is loaded from external file
     Given symptoms.json is available

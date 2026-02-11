@@ -1,14 +1,14 @@
 Feature: Entry selection
   Manage switching entries by date or selector.
 
-  @assumed
+  @confirmed
   @ENTR-001
   Scenario: Selecting an existing entry loads its data
     Given multiple entries exist
     When I select a different entry from the entry selector
     Then the selected entry is loaded
 
-  @assumed
+  @confirmed
   @ENTR-002
   Scenario: Changing the date creates or loads an entry
     Given I am viewing the journal

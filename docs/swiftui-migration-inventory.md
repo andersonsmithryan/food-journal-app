@@ -121,8 +121,12 @@
 - [x] All template clones mapped to views
 - [x] All DOM mutation sites replaced by state-driven UI
 - [x] Persistence & file sync strategy mapped
+- [ ] Confirm all remaining `@assumed` Gherkin scenarios
+- [ ] Add module + feature tagging to Gherkin scenarios
+- [ ] Publish module → feature file mapping table
+- [ ] Define parity checklist per module phase
 
-**Status notes:** Persistence strategy mapped; all checklist items complete.
+**Status notes:** Core inventory complete; additional readiness tasks added for Gherkin confirmation and module planning.
 
 ## 6.1) Template Clone → SwiftUI View Mapping
 - `#meal-template` → `MealCardView` (meal shell, metadata, finish state).

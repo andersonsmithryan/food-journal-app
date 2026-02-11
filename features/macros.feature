@@ -1,7 +1,7 @@
 Feature: Macro nutrient tracking
   Capture macro totals after finishing a meal.
 
-  @assumed
+  @confirmed
   @MACR-001
   Scenario: Macro fields are shown after finishing a meal
     Given I finish logging a meal
