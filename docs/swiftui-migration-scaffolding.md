@@ -33,27 +33,25 @@ Define the initial project/module layout and migration sequencing before impleme
 - `UI/Theme/`
 
 ## Feature → Module Mapping (Gherkin Files)
-| Module | Feature files |
-| --- | --- |
-| EntrySelector | `features/entry-selector.feature` |
-| Baseline | `features/baseline.feature` |
-| Meals | `features/meal-logging.feature`, `features/ingredient-type.feature` |
-| Symptoms | `features/symptom-change.feature`, `features/symptom-config.feature` |
-| Timeline | `features/timeline.feature` |
-| Macros | `features/macros.feature` |
-| Persistence | `features/persistence.feature`, `features/companion-file.feature` |
+| Primary module (initial) | Feature tag | Feature files | Status |
+| --- | --- | --- | --- |
+| Meals | `@feature:EntrySelector` | `features/entry-selector.feature` | Inferred |
+| Symptoms | `@feature:BaselineSymptoms` | `features/baseline.feature` | Inferred |
+| Meals | `@feature:MealLogging` | `features/meal-logging.feature` | Inferred |
+| Meals | `@feature:IngredientType` | `features/ingredient-type.feature` | Inferred |
+| Symptoms | `@feature:SymptomChange` | `features/symptom-change.feature` | Inferred |
+| Symptoms | `@feature:SymptomConfig` | `features/symptom-config.feature` | Inferred |
+| Symptoms | `@feature:Timeline` | `features/timeline.feature` | Inferred |
+| Meals | `@feature:Macros` | `features/macros.feature` | Inferred |
+| Meals | `@feature:Persistence` | `features/persistence.feature` | Inferred |
+| Meals | `@feature:CompanionFile` | `features/companion-file.feature` | Inferred |
 
 ## Tagging Scheme Proposal (Two-Level Split)
 Use two tags per scenario to capture both module and feature.
 
 **Module tags**
-- `@module:EntrySelector`
-- `@module:Baseline`
 - `@module:Meals`
 - `@module:Symptoms`
-- `@module:Timeline`
-- `@module:Macros`
-- `@module:Persistence`
 
 **Feature tags**
 - `@feature:BaselineSymptoms`
@@ -74,7 +72,11 @@ Use two tags per scenario to capture both module and feature.
 Scenario: Baseline symptoms are prefilled for a new entry
 ```
 
-## Module Phase Definition + Parity Gate Example
+## Module Phases (Inferred) + Parity Gate Examples
+**Module phases (initial):**
+- **Meals module phase:** entry selection, meal logging, ingredient type, macros, persistence + companion file flow.
+- **Symptoms module phase:** baseline symptoms, symptom change, symptom config, timeline.
+
 **Module phase:** the migration slice that completes a single module end-to-end (model updates, store actions, SwiftUI views, and persistence hooks if needed).
 
 **Parity gates (example for Symptoms module):**

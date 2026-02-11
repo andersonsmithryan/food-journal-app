@@ -123,7 +123,10 @@
 - [x] Persistence & file sync strategy mapped
 - [ ] Confirm all remaining `@assumed` Gherkin scenarios
 - [ ] Add module + feature tagging to Gherkin scenarios
+- [ ] Review module → feature mapping table (mark inferred entries confirmed)
+- [ ] Finalize module boundary rules and review guardrails
 - [ ] Publish module → feature file mapping table
+- [ ] Define module phases + parity gates per module
 - [ ] Define parity checklist per module phase
 
 **Status notes:** Core inventory complete; additional readiness tasks added for Gherkin confirmation and module planning.
