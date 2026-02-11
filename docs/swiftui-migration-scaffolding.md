@@ -72,6 +72,18 @@ Use two tags per scenario to capture both module and feature.
 Scenario: Baseline symptoms are prefilled for a new entry
 ```
 
+## Current-State vs Future-State Reconciliation (Required)
+- Treat these documents as a capture of **current app behavior** first (baseline for parity).
+- Define desired **future architecture** as a separate pass, then reconcile each feature as Keep / Modify / Deprecate.
+- Initial known future-state assumptions from review:
+  - `EntrySelector` and `Persistence/CompanionFile` are currently shared concerns.
+  - Companion-file sync may be deprecated in future architecture.
+  - Timeline rows may be deprecated in future architecture.
+
+## Component Ownership (Initial Decision)
+- Symptom controls (checkbox/slider/time inputs) are **module-local to Symptoms**.
+- Promote to shared `UI/Components` only if another module has a real implementation dependency.
+
 ## Module Phases (Inferred) + Parity Gate Examples
 **Module phases (initial):**
 - **Meals module phase:** entry selection, meal logging, ingredient type, macros, persistence + companion file flow.

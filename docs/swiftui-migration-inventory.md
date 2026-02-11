@@ -128,6 +128,8 @@
 - [ ] Publish module → feature file mapping table
 - [ ] Define module phases + parity gates per module
 - [ ] Define parity checklist per module phase
+- [ ] Capture and sign off current-state behavior baseline (before architecture changes)
+- [ ] Map components/features to future-state architecture (Keep / Modify / Deprecate)
 
 **Status notes:** Core inventory complete; additional readiness tasks added for Gherkin confirmation and module planning.
 
