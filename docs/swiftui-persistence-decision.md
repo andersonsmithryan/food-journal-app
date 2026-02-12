@@ -44,3 +44,11 @@ Adopt a dual-path model:
 - Save updates companion file when connected and permitted.
 - Import normalizes entries and preserves compatibility defaults.
 - User can recover from permission loss without data loss.
+
+## Future-State Direction (Draft)
+- Preferred first step: evaluate iCloud-backed sync for continuity across Apple devices.
+- Keep local app storage as a resilient offline baseline even if iCloud is enabled.
+- Open design questions before finalizing:
+  - CloudKit records vs iCloud document model
+  - Conflict resolution policy (last-write-wins vs merge)
+  - How/when companion-file support is deprecated

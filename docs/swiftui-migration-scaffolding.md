@@ -46,6 +46,13 @@ Define the initial project/module layout and migration sequencing before impleme
 | Meals | `@feature:Persistence` | `features/persistence.feature` | Inferred |
 | Meals | `@feature:CompanionFile` | `features/companion-file.feature` | Inferred |
 
+## Mapping Definition (What is mapped from/to)
+- **From:** each Gherkin feature file in `features/*.feature`.
+- **To:**
+  1) a primary migration module (`Meals` or `Symptoms`), and
+  2) a feature tag (`@feature:*`) for finer-grained tracking.
+- Purpose: planning ownership and migration sequencing, not renaming feature files.
+
 ## Tagging Scheme Proposal (Two-Level Split)
 Use two tags per scenario to capture both module and feature.
 
@@ -73,9 +80,11 @@ Scenario: Baseline symptoms are prefilled for a new entry
 ```
 
 ## Current-State vs Future-State Reconciliation (Required)
+- Planning record can live in chat while drafting, but confirmed decisions should be copied into repo docs to preserve continuity.
 - Treat these documents as a capture of **current app behavior** first (baseline for parity).
 - Define desired **future architecture** as a separate pass, then reconcile each feature as Keep / Modify / Deprecate.
 - Initial known future-state assumptions from review:
+  - Preferred first-step future-state continuity path: iCloud sync (pending technical constraints and schema decisions).
   - `EntrySelector` and `Persistence/CompanionFile` are currently shared concerns.
   - Companion-file sync may be deprecated in future architecture.
   - Timeline rows may be deprecated in future architecture.

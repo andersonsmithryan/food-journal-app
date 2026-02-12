@@ -8,7 +8,7 @@ Feature: Symptom configuration driven rendering
     When the app initializes
     Then symptom options are loaded from the external configuration
 
-  @assumed
+  @confirmed
   @SCFG-002
   Scenario: Checkbox and slider symptom types render from config
     Given a symptom definition declares an input type
