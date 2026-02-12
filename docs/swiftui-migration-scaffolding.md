@@ -35,16 +35,16 @@ Define the initial project/module layout and migration sequencing before impleme
 ## Feature → Module Mapping (Gherkin Files)
 | Primary module (initial) | Feature tag | Feature files | Status |
 | --- | --- | --- | --- |
-| Meals | `@feature:EntrySelector` | `features/entry-selector.feature` | Inferred |
-| Symptoms | `@feature:BaselineSymptoms` | `features/baseline.feature` | Inferred |
-| Meals | `@feature:MealLogging` | `features/meal-logging.feature` | Inferred |
-| Meals | `@feature:IngredientType` | `features/ingredient-type.feature` | Inferred |
+| Meals | `@feature:EntrySelector` | `features/entry-selector.feature` | Confirmed |
+| Symptoms | `@feature:BaselineSymptoms` | `features/baseline.feature` | Confirmed |
+| Meals | `@feature:MealLogging` | `features/meal-logging.feature` | Confirmed |
+| Meals | `@feature:IngredientType` | `features/ingredient-type.feature` | Confirmed |
 | Symptoms | `@feature:SymptomChange` | `features/symptom-change.feature` | Inferred |
-| Symptoms | `@feature:SymptomConfig` | `features/symptom-config.feature` | Inferred |
-| Symptoms | `@feature:Timeline` | `features/timeline.feature` | Inferred |
-| Meals | `@feature:Macros` | `features/macros.feature` | Inferred |
+| Symptoms | `@feature:SymptomConfig` | `features/symptom-config.feature` | Confirmed |
+| Symptoms | `@feature:Timeline` | `features/timeline.feature` | Confirmed |
+| Meals | `@feature:Macros` | `features/macros.feature` | Confirmed |
 | Meals | `@feature:Persistence` | `features/persistence.feature` | Inferred |
-| Meals | `@feature:CompanionFile` | `features/companion-file.feature` | Inferred |
+| Meals | `@feature:CompanionFile` | `features/companion-file.feature` | Confirmed |
 
 ## Mapping Definition (What is mapped from/to)
 - **From:** each Gherkin feature file in `features/*.feature`.
