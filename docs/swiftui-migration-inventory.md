@@ -124,7 +124,7 @@
 - [x] Confirm all remaining `@assumed` Gherkin scenarios
 - [ ] Add module + feature tagging to Gherkin scenarios
 - [x] Review module → feature mapping table (mark inferred entries confirmed)
-- [ ] Finalize module boundary rules and review guardrails
+- [x] Finalize module boundary rules and review guardrails
 - [x] Publish module → feature file mapping table
 - [ ] Define module phases + parity gates per module
 - [ ] Define parity checklist per module phase
@@ -137,7 +137,7 @@
 ### Incomplete Tasks Grouped by Stage
 
 **Started (in progress, prioritize finishing):**
-- [ ] Finalize module boundary rules and review guardrails
+- [x] Finalize module boundary rules and review guardrails
 - [ ] Define module phases + parity gates per module
 - [ ] Define parity checklist per module phase
 - [ ] Capture and sign off current-state behavior baseline (before architecture changes)

@@ -120,6 +120,20 @@ Scenario: Baseline symptoms are prefilled for a new entry
 - `Models/*` has no dependency on `Features/*` or `UI/*`.
 - Cross-feature calls go through `JournalStore` actions, not direct feature-to-feature imports.
 
+### Hard "Must Not" Rules (Migration Gate)
+- SwiftUI view files under `Features/*` **must not** import or call concrete persistence services (for example `JournalPersistenceService`, `CompanionFileService`).
+- `Features/Meals/*` **must not** import code from `Features/Symptoms/*` directly (and vice versa); shared behavior must be lifted into `Stores/*` or `UI/Components/*`.
+- `Models/*` **must not** import from `Features/*`, `Persistence/*`, or `UI/*`.
+- PRs that violate these rules are blocked until dependency direction is corrected.
+
+### Enforcement Artifacts
+- **PR checklist (project-specific):** a short required checklist in every migration PR description (for example: "No direct persistence calls from views", "No cross-feature imports", "Parity gate notes attached").
+- **Lint rule (project-specific):** automated import/path checks run in CI to catch forbidden dependencies before merge.
+
+### Common Term Definitions
+- **PR checklist (general):** a repeatable list of verification items reviewers and authors must confirm before merge.
+- **Lint rule (general):** a static analysis rule that automatically flags code style or architecture violations.
+
 ### Guardrails
 - Keep each feature folder self-contained: view(s), local view model(s), feature-level tests.
 - Use protocol abstractions (`JournalPersistence`, `CompanionSyncing`) in `Stores` to prevent tight coupling.
