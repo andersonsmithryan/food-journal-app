@@ -123,15 +123,28 @@
 - [x] Persistence & file sync strategy mapped
 - [x] Confirm all remaining `@assumed` Gherkin scenarios
 - [ ] Add module + feature tagging to Gherkin scenarios
-- [ ] Review module → feature mapping table (mark inferred entries confirmed)
+- [x] Review module → feature mapping table (mark inferred entries confirmed)
 - [ ] Finalize module boundary rules and review guardrails
-- [ ] Publish module → feature file mapping table
+- [x] Publish module → feature file mapping table
 - [ ] Define module phases + parity gates per module
 - [ ] Define parity checklist per module phase
 - [ ] Capture and sign off current-state behavior baseline (before architecture changes)
 - [ ] Map components/features to future-state architecture (Keep / Modify / Deprecate)
 
 **Status notes:** Core inventory complete; additional readiness tasks added for Gherkin confirmation and module planning.
+
+
+### Incomplete Tasks Grouped by Stage
+
+**Started (in progress, prioritize finishing):**
+- [ ] Finalize module boundary rules and review guardrails
+- [ ] Define module phases + parity gates per module
+- [ ] Define parity checklist per module phase
+- [ ] Capture and sign off current-state behavior baseline (before architecture changes)
+- [ ] Map components/features to future-state architecture (Keep / Modify / Deprecate)
+
+**Backlog (not started):**
+- [ ] Add module + feature tagging to Gherkin scenarios
 
 ## 6.1) Template Clone → SwiftUI View Mapping
 - `#meal-template` → `MealCardView` (meal shell, metadata, finish state).

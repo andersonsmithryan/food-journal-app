@@ -39,11 +39,11 @@ Define the initial project/module layout and migration sequencing before impleme
 | Symptoms | `@feature:BaselineSymptoms` | `features/baseline.feature` | Confirmed |
 | Meals | `@feature:MealLogging` | `features/meal-logging.feature` | Confirmed |
 | Meals | `@feature:IngredientType` | `features/ingredient-type.feature` | Confirmed |
-| Symptoms | `@feature:SymptomChange` | `features/symptom-change.feature` | Inferred |
+| Symptoms | `@feature:SymptomChange` | `features/symptom-change.feature` | Confirmed |
 | Symptoms | `@feature:SymptomConfig` | `features/symptom-config.feature` | Confirmed |
 | Symptoms | `@feature:Timeline` | `features/timeline.feature` | Confirmed |
 | Meals | `@feature:Macros` | `features/macros.feature` | Confirmed |
-| Meals | `@feature:Persistence` | `features/persistence.feature` | Inferred |
+| Meals | `@feature:Persistence` | `features/persistence.feature` | Confirmed |
 | Meals | `@feature:CompanionFile` | `features/companion-file.feature` | Confirmed |
 
 ## Mapping Definition (What is mapped from/to)
