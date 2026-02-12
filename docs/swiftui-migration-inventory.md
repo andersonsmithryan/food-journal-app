@@ -124,8 +124,10 @@
 - [x] Confirm all remaining `@assumed` Gherkin scenarios
 - [ ] Add module + feature tagging to Gherkin scenarios
 - [x] Review module → feature mapping table (mark inferred entries confirmed)
-- [x] Finalize module boundary rules and review guardrails
+- [x] Draft module boundary rules and review guardrails
+- [ ] Confirm/approve module boundary rules and review guardrails
 - [x] Publish module → feature file mapping table
+- [ ] Configure Jira integration for live sync with agent planning mode
 - [ ] Define module phases + parity gates per module
 - [ ] Define parity checklist per module phase
 - [ ] Capture and sign off current-state behavior baseline (before architecture changes)
@@ -137,7 +139,8 @@
 ### Incomplete Tasks Grouped by Stage
 
 **Started (in progress, prioritize finishing):**
-- [x] Finalize module boundary rules and review guardrails
+- [x] Draft module boundary rules and review guardrails
+- [ ] Confirm/approve module boundary rules and review guardrails
 - [ ] Define module phases + parity gates per module
 - [ ] Define parity checklist per module phase
 - [ ] Capture and sign off current-state behavior baseline (before architecture changes)
@@ -145,6 +148,7 @@
 
 **Backlog (not started):**
 - [ ] Add module + feature tagging to Gherkin scenarios
+- [ ] Configure Jira integration for live sync with agent planning mode
 
 ## 6.1) Template Clone → SwiftUI View Mapping
 - `#meal-template` → `MealCardView` (meal shell, metadata, finish state).
