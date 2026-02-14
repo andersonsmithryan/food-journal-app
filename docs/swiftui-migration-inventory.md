@@ -126,6 +126,7 @@
 - [x] Review module → feature mapping table (mark inferred entries confirmed)
 - [x] Draft module boundary rules and review guardrails
 - [ ] Confirm/approve module boundary rules and review guardrails
+- [ ] Confirm future-state applicability of approved boundary rules
 - [x] Publish module → feature file mapping table
 - [ ] Configure Jira integration for live sync with agent planning mode
 - [ ] Define module phases + parity gates per module
@@ -141,6 +142,7 @@
 **Started (in progress, prioritize finishing):**
 - [x] Draft module boundary rules and review guardrails
 - [ ] Confirm/approve module boundary rules and review guardrails
+- [ ] Confirm future-state applicability of approved boundary rules
 - [ ] Define module phases + parity gates per module
 - [ ] Define parity checklist per module phase
 - [ ] Capture and sign off current-state behavior baseline (before architecture changes)
