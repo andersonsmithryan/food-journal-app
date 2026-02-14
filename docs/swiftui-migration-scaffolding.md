@@ -120,6 +120,11 @@ Scenario: Baseline symptoms are prefilled for a new entry
 - `Models/*` has no dependency on `Features/*` or `UI/*`.
 - Cross-feature calls go through `JournalStore` actions, not direct feature-to-feature imports.
 
+### Boundary Rule Scope and Confidence
+- These boundary rules are **target-state SwiftUI architecture rules**, not a literal description of the current single-file web implementation.
+- Current-state web code uses one-page JavaScript/DOM mutation patterns and does not enforce Swift module boundaries directly.
+- Confidence: high for migration guardrails, but final approval should be based on team architecture decisions.
+
 ### Hard "Must Not" Rules (Migration Gate)
 - SwiftUI view files under `Features/*` **must not** import or call concrete persistence services (for example `JournalPersistenceService`, `CompanionFileService`).
 - `Features/Meals/*` **must not** import code from `Features/Symptoms/*` directly (and vice versa); shared behavior must be lifted into `Stores/*` or `UI/Components/*`.
@@ -133,6 +138,12 @@ Scenario: Baseline symptoms are prefilled for a new entry
 ### Common Term Definitions
 - **PR checklist (general):** a repeatable list of verification items reviewers and authors must confirm before merge.
 - **Lint rule (general):** a static analysis rule that automatically flags code style or architecture violations.
+
+### Additional Candidate Boundary Rules (Not Yet Confirmed)
+- `Stores/*` should expose intent-based actions and **must not** leak persistence DTOs directly to `Features/*`.
+- `UI/Components/*` should remain presentation-focused and **must not** mutate persistence state directly.
+- `Import/*` **must not** write directly to UI state; it should return normalized models for store actions.
+- Test target boundaries should mirror module boundaries (feature tests should avoid importing concrete persistence services).
 
 ### Guardrails
 - Keep each feature folder self-contained: view(s), local view model(s), feature-level tests.
