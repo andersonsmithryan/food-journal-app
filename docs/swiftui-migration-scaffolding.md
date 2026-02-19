@@ -128,16 +128,16 @@ Scenario: Baseline symptoms are prefilled for a new entry
 ### Current-State Validation Results (Boundary Rules)
 Boundary rules below were validated against the **current** web codebase shape (single `index.html` + DOM/event/persistence coupling):
 
-| Rule | Current-state accurate? | Current-state assessment status |
+| Rule | Current-state status | Future-state status |
 | --- | --- | --- |
-| Hard rule: feature views must not call persistence services directly | No (no feature-module separation exists in current app) | Confirmed: not accurate for current state |
-| Hard rule: Meals/Symptoms feature modules must not import each other directly | No (module boundaries do not exist yet) | Confirmed: not accurate for current state |
-| Hard rule: models must not import features/persistence/UI | No (model/module import graph does not exist yet) | Confirmed: not accurate for current state |
-| Hard rule: violating PRs are blocked on dependency direction | No (no such automated boundary gate is currently implemented) | Confirmed: not accurate for current state |
-| Candidate: `Stores/*` must not leak persistence DTOs to `Features/*` | No (stores/features layers do not exist in current app) | Confirmed: not accurate for current state |
-| Candidate: `UI/Components/*` must not mutate persistence state directly | No (shared SwiftUI component layer does not exist yet) | Confirmed: not accurate for current state |
-| Candidate: `Import/*` must not write directly to UI state | No (separate import layer does not exist yet) | Confirmed: not accurate for current state |
-| Candidate: test boundaries should mirror module boundaries | No (module-aligned Swift test targets do not exist yet) | Confirmed: not accurate for current state |
+| Hard rule: feature views must not call persistence services directly | Confirmed: not accurate for current state | Pending confirmation for future state |
+| Hard rule: Meals/Symptoms feature modules must not import each other directly | Confirmed: not accurate for current state | Pending confirmation for future state |
+| Hard rule: models must not import features/persistence/UI | Confirmed: not accurate for current state | Pending confirmation for future state |
+| Hard rule: violating PRs are blocked on dependency direction | Confirmed: not accurate for current state | Pending confirmation for future state |
+| Candidate: `Stores/*` must not leak persistence DTOs to `Features/*` | Confirmed: not accurate for current state | Pending confirmation for future state |
+| Candidate: `UI/Components/*` must not mutate persistence state directly | Confirmed: not accurate for current state | Pending confirmation for future state |
+| Candidate: `Import/*` must not write directly to UI state | Confirmed: not accurate for current state | Pending confirmation for future state |
+| Candidate: test boundaries should mirror module boundaries | Confirmed: not accurate for current state | Pending confirmation for future state |
 
 Notes:
 - Current web implementation is not module-structured, so these rules cannot be literally true today.
