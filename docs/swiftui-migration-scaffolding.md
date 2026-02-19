@@ -125,6 +125,18 @@ Scenario: Baseline symptoms are prefilled for a new entry
 - Current-state web code uses one-page JavaScript/DOM mutation patterns and does not enforce Swift module boundaries directly.
 - Confidence: high for migration guardrails, but final approval should be based on team architecture decisions.
 
+### Current-State Validation Results (Boundary Rules)
+Boundary rules below were validated against the **current** web codebase shape (single `index.html` + DOM/event/persistence coupling):
+
+| Rule set | Current-state accurate? | Status |
+| --- | --- | --- |
+| Hard "Must Not" Rules (Migration Gate) | No (target-state only) | Not confirmed for current state |
+| Additional Candidate Boundary Rules | No (target-state only) | Not confirmed for current state |
+
+Notes:
+- Current web implementation is not module-structured, so these rules cannot be literally true today.
+- These remain migration guardrails to confirm for SwiftUI future-state architecture.
+
 ### Hard "Must Not" Rules (Migration Gate)
 - SwiftUI view files under `Features/*` **must not** import or call concrete persistence services (for example `JournalPersistenceService`, `CompanionFileService`).
 - `Features/Meals/*` **must not** import code from `Features/Symptoms/*` directly (and vice versa); shared behavior must be lifted into `Stores/*` or `UI/Components/*`.
