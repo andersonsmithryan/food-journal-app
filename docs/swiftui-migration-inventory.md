@@ -136,6 +136,18 @@
 
 **Status notes:** Core inventory complete; additional readiness tasks added for Gherkin confirmation and module planning.
 
+### Boundary Rule Status Tracker (Current vs Future)
+| Boundary rule | Current-state confirmation status | Future-state confirmation status |
+| --- | --- | --- |
+| Feature views must not call persistence services directly | Confirmed: not accurate for current state | Pending confirmation |
+| Meals/Symptoms feature modules must not import each other directly | Confirmed: not accurate for current state | Pending confirmation |
+| Models must not import features/persistence/UI | Confirmed: not accurate for current state | Pending confirmation |
+| PRs violating dependency direction are blocked | Confirmed: not accurate for current state | Pending confirmation |
+| `Stores/*` should not leak persistence DTOs to `Features/*` | Confirmed: not accurate for current state | Pending confirmation |
+| `UI/Components/*` should not mutate persistence state directly | Confirmed: not accurate for current state | Pending confirmation |
+| `Import/*` should not write directly to UI state | Confirmed: not accurate for current state | Pending confirmation |
+| Test boundaries should mirror module boundaries | Confirmed: not accurate for current state | Pending confirmation |
+
 
 ### Incomplete Tasks Grouped by Stage
 
