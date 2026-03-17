@@ -1,0 +1,20 @@
+[
+  { "label": "Tiredness / Fatigue", "key": "fatigue", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Diffused Redness", "key": "diffusedRedness", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Facial Flushing", "key": "facialFlushing", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Facial Bloating", "key": "facialBloating", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Abdominal Bloating", "key": "abdominalBloating", "scope": "digestion", "inputType": "slider" },
+  { "label": "Flatulence", "key": "flatulence", "scope": "digestion", "inputType": "slider" },
+  { "label": "Constipation", "key": "constipation", "scope": "digestion", "inputType": "slider" },
+  { "label": "Diarrhoea", "key": "diarrhoea", "scope": "digestion", "inputType": "slider" },
+  { "label": "Hand Tremors", "key": "handTremors", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Dizziness", "key": "dizziness", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Sinus Pressure", "key": "sinusPressure", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Headache", "key": "headache", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Palpitations", "key": "palpitations", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Itchiness", "key": "itchiness", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Jaw Pain", "key": "jawPain", "scope": "symptoms", "inputType": "slider" },
+  { "label": "Digestive discomfort", "key": "digestiveDiscomfort", "scope": "digestion", "inputType": "slider" },
+  { "label": "Steatorrhoea", "key": "steatorrhoea", "scope": "digestion", "inputType": "slider" },
+  { "label": "Heart Rate Increase", "key": "heartRateIncrease", "scope": "symptoms", "inputType": "checkbox", "conditionalKey": "heartRateBpm", "conditionalLabel": "BPM", "conditionalInputType": "number" }
+]

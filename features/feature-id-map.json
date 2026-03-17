@@ -1,0 +1,42 @@
+{
+  "companion-file.feature": {
+    "Disable new entry when no companion file is connected": "COMP-001",
+    "Prevent new entry creation from the date picker when no companion file is connected": "COMP-002"
+  },
+  "baseline.feature": {
+    "Finishing baseline locks inputs and hides zero or unchecked symptoms": "BASE-001"
+  },
+  "meal-logging.feature": {
+    "Add meal is disabled until baseline is complete": "MEAL-001"
+  },
+  "symptom-change.feature": {
+    "Selecting \"no\" hides and clears post-meal symptom fields": "SYMP-001",
+    "Selecting \"yes\" shows post-meal symptoms and copies baseline values": "SYMP-002"
+  },
+  "entry-selector.feature": {
+    "Selecting an existing entry loads its data": "ENTR-001",
+    "Changing the date creates or loads an entry": "ENTR-002"
+  },
+  "persistence.feature": {
+    "Saving an entry writes to local storage": "PERS-001",
+    "Saving an entry updates the companion file when connected": "PERS-002",
+    "Importing a companion file loads entries into the journal": "PERS-003"
+  },
+  "timeline.feature": {
+    "Adding a timeline row creates a symptom event": "TL-001",
+    "Updating meal time recalculates timeline onsets": "TL-002"
+  },
+  "macros.feature": {
+    "Macro fields are shown after finishing a meal": "MACR-001"
+  },
+  "ingredient-type.feature": {
+    "Single ingredient hides component and packaged detail inputs": "INGR-001",
+    "Prepared recipe enables component workflow": "INGR-002",
+    "Packaged food enables sub-ingredient details": "INGR-003"
+  },
+  "symptom-config.feature": {
+    "Symptom configuration is loaded from external file": "SCFG-001",
+    "Checkbox and slider symptom types render from config": "SCFG-002",
+    "Missing or invalid config falls back to defaults": "SCFG-003"
+  }
+}
