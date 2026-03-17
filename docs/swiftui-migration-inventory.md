@@ -149,6 +149,37 @@
 | Test boundaries should mirror module boundaries | Confirmed: not accurate for current state | Pending confirmation |
 
 
+
+### Task in progress
+**In Progress:** Confirm future-state applicability of candidate boundary rules.
+
+#### Assumptions inventory (A: documented and pending confirmation)
+| ID | Assumption | Plain English description | Practical example | Agile user story | Agile scenario (Given / When / Then) | Required next step | Confidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A1 | Feature views should not call persistence services directly | UI code should trigger store intents, not write files/cloud directly. | `MealsView` triggers `JournalStore.saveDraft()` instead of calling a file/iCloud adapter. | As a developer, I want views to call store actions so that UI logic stays testable and persistence-agnostic. | Given a user taps Save, when the view dispatches save intent, then the store handles persistence via an abstraction without the view calling persistence services. | Confirm | High |
+| A2 | Meals and Symptoms modules should not import each other directly | Feature modules should stay independent and share only through approved shared layers. | `Features/Meals` does not import `Features/Symptoms`; shared code lives in shared/store layers. | As a maintainer, I want module boundaries enforced so that changes in one module do not cascade into another. | Given a new Meals capability, when implementation is added, then it must not import Symptoms internals directly. | Confirm | High |
+| A3 | Models should remain independent from feature/persistence/UI layers | Core business types should not depend on views or storage implementations. | `Meal` / `Entry` models do not import SwiftUI or persistence modules. | As an architect, I want domain models to stay pure so that they can be reused across UI and storage implementations. | Given domain models are compiled, when dependencies are checked, then no feature/persistence/UI imports appear in model files. | Confirm | High |
+| A4 | PR boundary violations should be blocked | Boundary-breaking changes should be prevented at review/CI gates. | A PR fails if it introduces forbidden dependency direction. | As a team lead, I want boundary checks in PRs so that architecture drift is stopped before merge. | Given a PR introduces a forbidden import, when checks run, then merge is blocked until fixed. | Input (choose enforcement mechanism/timing) | Moderate |
+| A5 | Stores should not leak persistence DTOs to feature code | Feature code should consume domain/action outputs, not storage payload schemas. | Store maps persistence payload to domain model before returning to views. | As a developer, I want stores to hide persistence details so that storage changes do not break feature code. | Given data is loaded, when feature reads state, then it receives domain/action results rather than persistence payload structs. | Confirm | Moderate |
+| A6 | Shared UI components should be presentation-only | Reusable UI should render/bind state without persistence side effects. | `SymptomSliderView` binds values but does not write local/iCloud data directly. | As a UI engineer, I want shared components to be presentation-only so that side effects remain centralized. | Given a shared component interaction, when value changes, then it emits state changes without mutating persistence directly. | Confirm | High |
+| A7 | Import flow should normalize data then dispatch store actions | Import path should parse/normalize first, then state mutation happens through store. | Imported JSON is normalized to domain structures before applying to app state. | As a developer, I want import logic normalized before state updates so that malformed data is handled consistently. | Given external data is imported, when validation/normalization completes, then store actions apply updates to state. | Confirm | Moderate |
+| A8 | Test boundaries should mirror module boundaries | Test structure should reinforce architecture separation. | Feature tests mock persistence protocols instead of importing concrete adapters. | As a QA/dev engineer, I want tests to align with module boundaries so that layering violations are caught early. | Given a feature test suite, when dependencies are inspected, then it avoids direct concrete persistence imports except explicit integration tests. | Input (depends on test strategy maturity) | Moderate |
+
+#### Assumptions inventory (B: identified by assistant, not yet committed)
+| ID | Assumption | Plain English description | Practical example | Agile user story | Agile scenario (Given / When / Then) | Required next step | Confidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| B1 | Persistence abstraction remains valid for iCloud-first direction | A protocol boundary should allow local/iCloud implementations to be swapped. | `JournalPersistence` protocol with local and iCloud adapters. | As a product engineer, I want a protocol-backed persistence layer so that we can evolve storage providers with low feature churn. | Given iCloud-first is selected, when persistence implementation changes, then feature code remains unchanged behind the abstraction. | Confirm | High |
+| B2 | Companion-file boundaries are transitional | Companion-specific rules may reduce if future state deprecates companion flow. | Companion import/export remains during transition, then is retired post-iCloud stabilization. | As a migration planner, I want transitional rules flagged so that temporary architecture decisions are intentionally retired. | Given companion flow is deprecated, when future-state mapping is finalized, then companion-specific boundary rules are marked remove/deprecate. | Input (needs deprecation timeline) | Moderate |
+| B3 | PR enforcement may begin as soft gate, then CI hard block | Teams may stage governance from checklist review to automated blocking. | Start with PR checklist; add CI lint blocker once module structure settles. | As an engineering manager, I want phased enforcement so that governance adoption does not stall delivery. | Given boundary rules are newly introduced, when rollout starts, then soft gate is used first and upgraded to CI blocking at agreed milestone. | Input (choose rollout milestone) | Moderate |
+| B4 | Import-boundary strictness depends on future import UX scope | If import becomes rare/removed, strict import boundaries may be lower priority. | Import tooling kept minimal if app writes directly to cloud-backed store. | As a system designer, I want import controls proportionate to product usage so that complexity stays justified. | Given import is de-scoped in future architecture, when boundary set is finalized, then import-specific rules are relaxed or archived. | Input (confirm future import scope) | Moderate |
+
+#### Next 3–5 steps for this in-progress task
+1. User reviews A1–A8 and marks each as Apply / Modify / Reject.
+2. User provides input on A4 and A8 plus B1–B4 decision points.
+3. Assistant updates boundary tracker future-state status per rule with rationale.
+4. Assistant marks checklist task “Confirm future-state applicability of approved boundary rules” complete.
+5. Assistant proceeds to the next started item: define module phases + parity gates per module.
+
 ### Incomplete Tasks Grouped by Stage
 
 **Started (in progress, prioritize finishing):**
