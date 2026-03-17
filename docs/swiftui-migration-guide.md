@@ -112,3 +112,6 @@ The inventory document uses a consistent table:
 - Add a SwiftUI parity verification checklist per feature phase (Entry selector, Baseline, Meals, Symptoms, Timeline, Macros).
 - Define migration "exit criteria" for each phase (data parity, behavior parity, save/load parity).
 - Decide first migration slice (recommended: Entry selector + baseline) and create a phase-1 implementation task list.
+
+## 16) Troubleshoot Records
+- `docs/guided-migration-troubleshoot.md` captures troubleshooting outcomes and upstream command patch recommendations when guided migration outputs miss required fields.
